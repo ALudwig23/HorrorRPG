@@ -5,12 +5,13 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-    private int CurrentRoomScene = 1;
-    private int CombatScene = 0;
+    private int _currentRoomScene = 1;
+    private int _combatScene = 0;
 
     //Scripts reference
+    [SerializeField] private CheckPlayerCollision CheckPlayerCollision;
     [SerializeField] private PlayerMovement PlayerMovement;
-    [SerializeField] private InCombat InCombat;
+    [SerializeField] private BattleManager BattleManager;
 
     private GameManager m_Instance = null;
     public GameManager Instance
@@ -37,11 +38,6 @@ public class GameManager : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (PlayerMovement == null )
-        {
-            PlayerMovement = FindObjectOfType<PlayerMovement>();
-        }
-
         InGameScenesManager();
     }
 
@@ -49,31 +45,41 @@ public class GameManager : MonoBehaviour
     public void StartGame()
     {
         //Check if m_Instance is null or not on Scene 1 (Main Menu)
-        if (Instance == null || Instance.CurrentRoomScene != 1)
+        if (Instance == null || Instance._currentRoomScene != 1)
             return;
 
-        Instance.CurrentRoomScene = 2;
-        PlayerMovement.CanMove = true;
-        SceneManager.LoadScene(CurrentRoomScene);
+        Instance._currentRoomScene = 2;
+        SceneManager.LoadScene(_currentRoomScene);
+
+        //Assign PlayerMovement to the script after pressing play
+        PlayerMovement = FindObjectOfType<PlayerMovement>();
+
+        //Assign CheckPlayerCollision to the script after pressing play
+        CheckPlayerCollision = FindObjectOfType<CheckPlayerCollision>();
     }
 
     //Manager for in game scenes
     private void InGameScenesManager()
     {
-        if (PlayerMovement == null)
+        if (CheckPlayerCollision == null)
             return;
 
         //Check if player collided with enemy
-        if (PlayerMovement.CollidedWithEnemy == true)
+        if (CheckPlayerCollision.CollidedWithMonster == true)
         {
-            PlayerMovement.CollidedWithEnemy = false;
-            SceneManager.LoadScene(CombatScene);
+            Debug.Log("Loading Combat Scene");
+            SceneManager.LoadScene(_combatScene);
         }
 
-        if (InCombat.BattleEnd == true)
+        //Exit combat and return player to current room
+        if (BattleManager != null)
         {
-            SceneManager.LoadScene(CurrentRoomScene);
+            if (BattleManager.BattleWon == true)
+            {
+                SceneManager.LoadScene(_currentRoomScene);
+            }
         }
+        
     }
 
 }

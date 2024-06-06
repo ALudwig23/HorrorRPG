@@ -136,7 +136,7 @@ GameObject:
   - component: {fileID: 513747809}
   m_Layer: 0
   m_Name: Square (1)
-  m_TagString: Enemy
+  m_TagString: Monster1
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -356,8 +356,9 @@ GameObject:
   - component: {fileID: 1589789912}
   - component: {fileID: 1589789911}
   - component: {fileID: 1589789910}
-  - component: {fileID: 1589789909}
   - component: {fileID: 1589789908}
+  - component: {fileID: 1589789909}
+  - component: {fileID: 1589789913}
   m_Layer: 0
   m_Name: Square
   m_TagString: Untagged
@@ -422,8 +423,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7370b185b3a894640a4329e703058f27, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  CanMove: 0
   acceleration: 5
-  CollidedWithEnemy: 0
 --- !u!50 &1589789910
 Rigidbody2D:
   serializedVersion: 4
@@ -518,6 +519,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1589789913
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1589789907}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 129a15ffd5f8a6d4eb579a1c0abdbaa4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

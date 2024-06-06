@@ -6,9 +6,6 @@ public class PlayerMovement : MonoBehaviour
 {
     [SerializeField] private float acceleration;
 
-    public bool CollidedWithEnemy;
-    public bool CanMove;
-
     //Inputs
     private Vector2 _inputDirection;
     private Vector2 _normalizedInputDirection;
@@ -38,12 +35,5 @@ public class PlayerMovement : MonoBehaviour
         _rigidbody2D.velocity = _normalizedInputDirection;
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        //Check collision with enemy
-        if (collision.gameObject.CompareTag("Enemy"))
-        {
-            CollidedWithEnemy = true;
-        }
-    }
+   
 }

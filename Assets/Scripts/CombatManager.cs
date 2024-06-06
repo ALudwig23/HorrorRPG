@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class InCombat : MonoBehaviour
+public class CombatManager : MonoBehaviour
 {
     public bool BattleEnd;
 

@@ -1,18 +1,25 @@
+using JetBrains.Annotations;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MonsterInfo : MonoBehaviour
+public class MonsterInfo
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    public string Name { get; set; }
+    public int MaxHealth {  get; set; }
+    public string[] Moveset { get; set; }
 
-    // Update is called once per frame
-    void Update()
+    public MonsterInfo (string name, int maxHealth, string[] moveset)
     {
-        
+        Name = name;
+        MaxHealth = maxHealth;
+        Moveset = moveset;
     }
+}
+
+public class Monster1 : MonsterInfo
+{
+    public Monster1(string name, int maxHealth, string[] moveset) : base(name, maxHealth, moveset) { }
+
+
 }
