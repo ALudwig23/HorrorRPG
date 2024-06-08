@@ -361,7 +361,7 @@ GameObject:
   - component: {fileID: 1589789913}
   m_Layer: 0
   m_Name: Square
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -423,7 +423,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7370b185b3a894640a4329e703058f27, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CanMove: 0
   acceleration: 5
 --- !u!50 &1589789910
 Rigidbody2D:
@@ -448,7 +447,7 @@ Rigidbody2D:
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
-  m_Interpolate: 0
+  m_Interpolate: 1
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4

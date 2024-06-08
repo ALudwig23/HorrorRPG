@@ -2,39 +2,39 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum BattleState { BattleStart, PlayerTurn, EnemyTurn, BattleWon, BattleLost }
 public class BattleManager : MonoBehaviour
 {
+    public enum BattleState { BattleStart, PlayerTurn, EnemyTurn, BattleWon, BattleLost }
+    public bool BattleWon { get { return _battleWon; } }
+
     private int _numOfEnemies;
     private bool _battleWon;
-    public bool BattleWon
-    {
-        get { return _battleWon; }
-    }
+    
+    private GameObject _enemy1;
+    private GameObject _enemy2;
+    private GameObject _enemy3;
+    private Sprite _enemySprite1;
+    private Sprite _enemySprite2;
+    private Sprite _enemySprite3;
+    private Transform _enemyPos1;
+    private Transform _enemyPos2;
+    private Transform _enemyPos3;
+ 
+    [SerializeField] private CheckPlayerCollision CheckPlayerCollision;
+    [SerializeField] private MonsterInfo MonsterInfo;
+    private MonsterInfo.Monster1 Monster1;
 
-    [SerializeField] private GameObject EnemyPrefab1;
-    [SerializeField] private GameObject EnemyPrefab2;
-    [SerializeField] private GameObject EnemyPrefab3;
-
-    public Transform EnemyPos1;
-    public Transform EnemyPos2;
-    public Transform EnemyPos3;
-
-    private MonsterInfo _monsterInfo1;
-    private MonsterInfo _monsterInfo2;
-    private MonsterInfo _monsterInfo3;
-    private BattleState State;
+    [SerializeField] private BattleState _state;
 
     private void Start()
     {
-        State = BattleState.BattleStart;
-        EnemyPrefab1 = GameObject.FindWithTag("Enemy1");
+        _state = BattleState.BattleStart;
         BattleSetup();
     }
 
     private void BattleSetup()
     {
-        if (State != BattleState.BattleStart)
+        if (_state != BattleState.BattleStart)
             return;
 
         //**Placeholder** Randomizes amount of enemies in an encounter 1 - 3 (depends on room level)
@@ -44,54 +44,68 @@ public class BattleManager : MonoBehaviour
         switch (_numOfEnemies)
         {
             case 1:
+                if (CheckPlayerCollision.CollidedWithMonsterType == "Monster1")
+                {
+                    _enemySprite1 = Monster1.Monster1Sprite;
+                }
 
-                EnemyPos1 = GameObject.FindWithTag("Pos3").transform;
+                _enemyPos1 = GameObject.FindWithTag("Pos3").transform;
                 break;
 
             case 2:
 
-                EnemyPos1 = GameObject.FindWithTag("Pos2").transform;
-                EnemyPos2 = GameObject.FindWithTag("Pos4").transform;
+                _enemyPos1 = GameObject.FindWithTag("Pos2").transform;
+                _enemyPos2 = GameObject.FindWithTag("Pos4").transform;
                 break;
 
             case 3:
 
-                EnemyPos1 = GameObject.FindWithTag("Pos1").transform;
-                EnemyPos2 = GameObject.FindWithTag("Pos3").transform;
-                EnemyPos3 = GameObject.FindWithTag("Pos5").transform;
+                _enemyPos1 = GameObject.FindWithTag("Pos1").transform;
+                _enemyPos2 = GameObject.FindWithTag("Pos3").transform;
+                _enemyPos3 = GameObject.FindWithTag("Pos5").transform;
                 break;
         }
 
         //Spawn enemies based on enemy count
-        if (EnemyPrefab1 != null)
+        if (_enemy1 != null)
         {
-            GameObject enemy1GO = Instantiate(EnemyPrefab1, EnemyPos1);
-            enemy1GO.GetComponent<MonsterInfo>();
+            GameObject enemy1GO = Instantiate(_enemy1, _enemyPos1);
+            enemy1GO.AddComponent<SpriteRenderer>().sprite = _enemySprite1;
         }
        
-        if (EnemyPrefab2 != null)
+        if (_enemy2 != null)
         {
-            Instantiate(EnemyPrefab2, EnemyPos2);
+            Instantiate(_enemySprite2, _enemyPos2);
         }
         
-        if (EnemyPrefab3 != null)
+        if (_enemy3 != null)
         {
-            Instantiate(EnemyPrefab3, EnemyPos3);
+            Instantiate(_enemySprite3, _enemyPos3);
         } 
-
     }
 
     //Keeps track of turns and how battle ended
     private void BattleProgress()
     {
-        if (State == BattleState.BattleWon)
+        if (_state == BattleState.PlayerTurn)
+        {
+            //Playerui active
+
+        }
+
+        if (_state == BattleState.EnemyTurn)
+        {
+            //playerui inactive, enemy attacks, dialougue explains, cooldowns in between text
+        }
+
+        if (_state == BattleState.BattleWon)
         {
             _battleWon = true;
         }
 
-        if (State == BattleState.BattleLost)
+        if (_state == BattleState.BattleLost)
         {
-            _battleWon = false;
+            _battleWon = true;
         }
     }
 }

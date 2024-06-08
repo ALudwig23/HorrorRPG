@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -8,36 +9,39 @@ public class GameManager : MonoBehaviour
     private int _currentRoomScene = 1;
     private int _combatScene = 0;
 
-    //Scripts reference
-    [SerializeField] private CheckPlayerCollision CheckPlayerCollision;
-    [SerializeField] private PlayerMovement PlayerMovement;
-    [SerializeField] private BattleManager BattleManager;
+    [SerializeField] private Camera _playerCamera;
 
-    private GameManager m_Instance = null;
-    public GameManager Instance
+    //Scripts reference
+    [SerializeField] private CheckPlayerCollision _checkPlayerCollision;
+    [SerializeField] private PlayerMovement _playerMovement;
+    [SerializeField] private BattleManager _battleManager;
+
+    private static GameManager _instance = null;
+    public static GameManager Instance
     {
         get
         {
             //Looks for Instance GameManager as long as m_Instance is null
-            if (m_Instance == null)
+            if (_instance == null)
             {
-                m_Instance = FindObjectOfType<GameManager>();
+                _instance = FindObjectOfType<GameManager>();
 
                 //Create a new GameManger if a GameManager could not be found
-                if (m_Instance != null)
+                if (_instance == null)
                 {
                     GameObject go = new GameObject("GameManger");
                     go.AddComponent<GameManager>();
                 }
                 //Make sure the same GameManger is kept throughout the entire game
-                DontDestroyOnLoad(m_Instance.gameObject);
+                DontDestroyOnLoad(_instance.gameObject);
             }
-            return m_Instance;
+            return _instance;
         }
     }
 
     private void FixedUpdate()
     {
+        CameraManager();
         InGameScenesManager();
     }
 
@@ -52,31 +56,52 @@ public class GameManager : MonoBehaviour
         SceneManager.LoadScene(_currentRoomScene);
 
         //Assign PlayerMovement to the script after pressing play
-        PlayerMovement = FindObjectOfType<PlayerMovement>();
+        _playerMovement = FindObjectOfType<PlayerMovement>();
+    }
 
-        //Assign CheckPlayerCollision to the script after pressing play
-        CheckPlayerCollision = FindObjectOfType<CheckPlayerCollision>();
+    private void CameraManager()
+    {
+        //Only run when not in battle or main menu
+        if (Instance._currentRoomScene < 2)
+            return;
+
+        if (_playerCamera != null)
+            return;
+
+        //Find Camera and add Player Camera script
+        _playerCamera = FindObjectOfType<Camera>();
+
+        if (_playerCamera.GetComponent<PlayerCamera>() == null)
+        {
+            _playerCamera.AddComponent<PlayerCamera>();
+        }
     }
 
     //Manager for in game scenes
     private void InGameScenesManager()
     {
-        if (CheckPlayerCollision == null)
+        if (_checkPlayerCollision == null)
+        {
+            //Assign CheckPlayerCollision to the script
+            _checkPlayerCollision = FindObjectOfType<CheckPlayerCollision>();
+        }
+
+        if (_checkPlayerCollision == null)
             return;
 
         //Check if player collided with enemy
-        if (CheckPlayerCollision.CollidedWithMonster == true)
+        if (_checkPlayerCollision.CollidedWithMonster == true)
         {
             Debug.Log("Loading Combat Scene");
-            SceneManager.LoadScene(_combatScene);
+            SceneManager.LoadScene(Instance._combatScene);
         }
 
         //Exit combat and return player to current room
-        if (BattleManager != null)
+        if (_battleManager != null)
         {
-            if (BattleManager.BattleWon == true)
+            if (_battleManager.BattleWon == true)
             {
-                SceneManager.LoadScene(_currentRoomScene);
+                SceneManager.LoadScene(Instance._currentRoomScene);
             }
         }
         

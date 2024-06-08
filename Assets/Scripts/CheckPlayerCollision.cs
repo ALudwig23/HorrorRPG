@@ -4,14 +4,9 @@ using UnityEngine;
 
 public class CheckPlayerCollision : MonoBehaviour
 {
-    public bool CollidedWithMonster
-    {
-        get { return _collidedWithMonster; }
+    public bool CollidedWithMonster { get { return _collidedWithMonster; }
     }
-
-    public string CollidedWithMonsterType
-    {
-        get { return _collidedMonsterType; }
+    public string CollidedWithMonsterType { get { return _collidedMonsterType; }
     }
 
     private string _collidedMonsterType;
@@ -29,11 +24,13 @@ public class CheckPlayerCollision : MonoBehaviour
 
         if (collision.gameObject.CompareTag("Monster2"))
         {
+            _collidedMonsterType = "Monster2";
             _collidedWithMonster = true;
         }
 
         if (collision.gameObject.CompareTag("Monster3"))
         {
+            _collidedMonsterType = "Monster3";
             _collidedWithMonster = true;
         }
     }
@@ -50,11 +47,13 @@ public class CheckPlayerCollision : MonoBehaviour
 
         if (collision.gameObject.CompareTag("Monster2"))
         {
+            _collidedMonsterType = "none";
             _collidedWithMonster = false;
         }
 
         if (collision.gameObject.CompareTag("Monster3"))
         {
+            _collidedMonsterType = "none";
             _collidedWithMonster = false;
         }
     }

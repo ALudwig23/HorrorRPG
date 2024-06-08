@@ -11,7 +11,7 @@ public class PlayerMovement : MonoBehaviour
     private Vector2 _normalizedInputDirection;
 
     //Components 
-    protected Rigidbody2D _rigidbody2D;
+    private Rigidbody2D _rigidbody2D;
 
     void Start()
     {
