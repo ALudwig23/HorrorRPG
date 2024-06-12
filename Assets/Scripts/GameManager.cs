@@ -59,6 +59,12 @@ public class GameManager : MonoBehaviour
         _playerMovement = FindObjectOfType<PlayerMovement>();
     }
 
+    //Simple quit game function
+    public void QuitGame()
+    {
+        Application.Quit();
+    }
+
     private void CameraManager()
     {
         //Only run when not in battle or main menu
