@@ -38,7 +38,8 @@ public class BattleManager : MonoBehaviour
             return;
 
         //**Placeholder** Randomizes amount of enemies in an encounter 1 - 3 (depends on room level)
-        _numOfEnemies = Random.Range (1, 4);
+        //_numOfEnemies = Random.Range (1, 4);
+        _numOfEnemies = 1;
 
         //Spawn enemies in suitable positions based on enemy count
         switch (_numOfEnemies)
@@ -46,7 +47,7 @@ public class BattleManager : MonoBehaviour
             case 1:
                 if (CheckPlayerCollision.CollidedWithMonsterType == "Monster1")
                 {
-                    _enemySprite1 = Monster1.Monster1Sprite;
+                    _enemySprite1 = Monster1.Monster1InCombatSprite;
                 }
 
                 _enemyPos1 = GameObject.FindWithTag("Pos3").transform;

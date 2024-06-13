@@ -12,6 +12,7 @@ public class MonsterInfo : MonoBehaviour
         private string[] moveset = { "Basic",  };
 
         public Sprite Monster1Sprite;
+        public Sprite Monster1InCombatSprite;
         
 
     }

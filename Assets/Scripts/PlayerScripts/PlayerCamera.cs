@@ -6,7 +6,7 @@ public class PlayerCamera : MonoBehaviour
 {
     //Intensity of smoothing effect
     private float _smoothTime = 0.05f;
-    private float _panSpeed = 0.05f;
+    private float _panSpeed = 0.03f;
 
     private Vector3 _cameraOffset = new Vector3(0f, 0f, -10f);
     private Vector3 _panOffset;
