@@ -12,15 +12,18 @@ public class PlayerMovement : MonoBehaviour
 
     //Components 
     private Rigidbody2D _rigidbody2D;
+    private Animator _playerAnimator;
 
     void Start()
     {
         _rigidbody2D = GetComponent<Rigidbody2D>();
+        _playerAnimator = GetComponentInChildren<Animator>();
     }
 
     void Update()
     {
         _inputDirection = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+        UpdateAnimator();
     }
 
     void FixedUpdate()
@@ -35,5 +38,10 @@ public class PlayerMovement : MonoBehaviour
         _rigidbody2D.velocity = _normalizedInputDirection;
     }
 
-   
+    private void UpdateAnimator()
+    {
+        _playerAnimator.SetFloat("Horizontal", _normalizedInputDirection.x);
+        _playerAnimator.SetFloat("Vertical", _normalizedInputDirection.y);
+        _playerAnimator.SetFloat("Speed", _normalizedInputDirection.sqrMagnitude);
+    }
 }
