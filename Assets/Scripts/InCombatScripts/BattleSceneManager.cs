@@ -20,9 +20,8 @@ public class BattleManager : MonoBehaviour
     private Transform _enemyPos2;
     private Transform _enemyPos3;
  
-    [SerializeField] private CheckPlayerCollision CheckPlayerCollision;
-    [SerializeField] private MonsterInfo MonsterInfo;
-    private MonsterInfo.Monster1 Monster1;
+    [SerializeField] private CheckPlayerCollision _checkPlayerCollision;
+    [SerializeField] private MonsterManager _monsterManagerInfo;
 
     [SerializeField] private BattleState _state;
 
@@ -45,11 +44,7 @@ public class BattleManager : MonoBehaviour
         switch (_numOfEnemies)
         {
             case 1:
-                if (CheckPlayerCollision.CollidedWithMonsterType == "Monster1")
-                {
-                    _enemySprite1 = Monster1.Monster1InCombatSprite;
-                }
-
+           
                 _enemyPos1 = GameObject.FindWithTag("Pos3").transform;
                 break;
 
