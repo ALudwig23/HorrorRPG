@@ -8,6 +8,12 @@ public class GameManager : MonoBehaviour
 {
     private int _currentRoomScene = 1;
     private int _combatScene = 0;
+    private string _collidedMonsterType;
+
+    public string CollidedMonsterType
+    {
+        get { return _collidedMonsterType; }
+    }
 
     [SerializeField] private Camera _playerCamera;
 
@@ -43,6 +49,7 @@ public class GameManager : MonoBehaviour
     {
         CameraManager();
         InGameScenesManager();
+        CollisionHandler();
     }
 
     //Function for starting the game (used for start button)
@@ -71,7 +78,7 @@ public class GameManager : MonoBehaviour
         if (Instance._currentRoomScene < 2)
             return;
 
-        if (_playerCamera != null)
+        if (_playerCamera == null)
             return;
 
         //Find Camera and add Player Camera script
@@ -112,5 +119,13 @@ public class GameManager : MonoBehaviour
         }
         
     }
+
+    public void CollisionHandler()
+    {
+        if (_checkPlayerCollision == null)
+            return;
+
+        _collidedMonsterType = _checkPlayerCollision.CollidedMonsterType;
+    } 
 
 }

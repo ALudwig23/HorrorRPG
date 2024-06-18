@@ -4,20 +4,24 @@ using UnityEngine;
 
 public class CheckPlayerCollision : MonoBehaviour
 {
-    public bool CollidedWithMonster { get { return _collidedWithMonster; }
+    private string _collidedMonsterType = "none";
+    private bool _collidedWithMonster;
+    public bool CollidedWithMonster
+    {
+        get { return _collidedWithMonster; }
     }
-    public string CollidedWithMonsterType { get { return _collidedMonsterType; }
+    public string CollidedMonsterType
+    {
+        get { return _collidedMonsterType; }
     }
 
-    private string _collidedMonsterType;
-    private bool _collidedWithMonster;
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
         //Check collision with monster and check what monster it is
-        if (collision.gameObject.CompareTag("Monster1"))
+        if (collision.gameObject.CompareTag("GapingHoleMonster"))
         {
-            _collidedMonsterType = "Monster1";
+            _collidedMonsterType = "GapingHoleMonster";
             _collidedWithMonster = true;
             Debug.Log($"Collided with monster {CollidedWithMonster}");
         }

@@ -12,11 +12,13 @@ public class PlayerMovement : MonoBehaviour
 
     //Components 
     private Rigidbody2D _rigidbody2D;
+    private Transform _transform;
     private Animator _playerAnimator;
 
     void Start()
     {
         _rigidbody2D = GetComponent<Rigidbody2D>();
+        _transform = GetComponentInChildren<Transform>();
         _playerAnimator = GetComponentInChildren<Animator>();
     }
 
