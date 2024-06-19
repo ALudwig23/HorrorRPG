@@ -1206,9 +1206,12 @@ MonoBehaviour:
   _spawnPositionMid: {fileID: 74434124}
   _spawnPositionRight: {fileID: 109799952}
   _spawnPositionLeft: {fileID: 1840313738}
-  _fightButton: {fileID: 1357463661}
-  _specialActionsButton: {fileID: 734820289}
-  _runButton: {fileID: 1749013462}
+  _fightOption: {fileID: 1357463661}
+  _fightButton: {fileID: 1357463663}
+  _specialActionsOption: {fileID: 734820289}
+  _specialActionsButton: {fileID: 734820291}
+  _runOption: {fileID: 1749013462}
+  _runButton: {fileID: 1749013464}
   _selectedMonster: {fileID: 0}
   _selectedLimb: []
   _displayOptionBox: {fileID: 1453854544}
@@ -1918,8 +1921,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 64.67447, y: -139.76}
-  m_SizeDelta: {x: 394.3204, y: 170.48}
+  m_AnchoredPosition: {x: 57.3437, y: -139.76}
+  m_SizeDelta: {x: 408.9818, y: 170.48}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1453854546
 MonoBehaviour:
@@ -1934,7 +1937,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.3301887, g: 0.3301887, b: 0.3301887, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1

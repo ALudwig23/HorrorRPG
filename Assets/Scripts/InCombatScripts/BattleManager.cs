@@ -1,7 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
+using UnityEditor.Search;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class BattleManager : MonoBehaviour
 {
@@ -17,10 +20,13 @@ public class BattleManager : MonoBehaviour
     [SerializeField] private GameObject _spawnPositionRight;
     [SerializeField] private GameObject _spawnPositionLeft;
 
-    //Battle Option Buttons
-    [SerializeField] private GameObject _fightButton;
-    [SerializeField] private GameObject _specialActionsButton;
-    [SerializeField] private GameObject _runButton;
+    //Battle Options
+    [SerializeField] private GameObject _fightOption;
+    [SerializeField] private Button _fightButton;
+    [SerializeField] private GameObject _specialActionsOption;
+    [SerializeField] private Button _specialActionsButton;
+    [SerializeField] private GameObject _runOption;
+    [SerializeField] private Button _runButton;
 
     //Fight Options
     [SerializeField] private GameObject _selectedMonster;
@@ -49,7 +55,7 @@ public class BattleManager : MonoBehaviour
         _playerStats = Resources.Load<PlayerStats>("PlayerStatsData");
         _gameManager = FindObjectOfType<GameManager>();
 
-        MonsterSetup();
+        StartCoroutine(MonsterSetup());
         StartCoroutine(HandleState());
     }
 
@@ -62,7 +68,7 @@ public class BattleManager : MonoBehaviour
         
     }
 
-    private void MonsterSetup()
+    private IEnumerator MonsterSetup()
     {
         switch (_gameManager.CollidedMonsterType)
         {
@@ -76,6 +82,13 @@ public class BattleManager : MonoBehaviour
                 gapingHoleMonster.transform.SetParent(_spawnPositionMid.transform);
 
                 _gapingHoleMonster = FindObjectOfType<GapingHoleMonster>();
+                yield return new WaitForSeconds(0.1f);
+
+                _gapingHoleMonster.CreateLimbTarget();
+
+                _selectedLimb.Add(_gapingHoleMonster.LeftLimbSelection);
+                _selectedLimb.Add(_gapingHoleMonster.RightLimbSelection);
+                _selectedLimb.Add(_gapingHoleMonster.HeadLimbSelection);
 
                 Debug.Log("Encountered Monster With a Gaping Hole");
                 break;
@@ -96,18 +109,18 @@ public class BattleManager : MonoBehaviour
         {
             case BattleState.PlayerTurn:
 
-                _fightButton.SetActive(true);
-                _specialActionsButton.SetActive(true);
-                _runButton.SetActive(true);
+                _fightOption.SetActive(true);
+                _specialActionsOption.SetActive(true);
+                _runOption.SetActive(true);
                 _displayOptionBox.SetActive(true);
 
                 break;
 
             case BattleState.MonsterTurn:
 
-                _fightButton.SetActive(false); 
-                _specialActionsButton.SetActive(false);
-                _runButton.SetActive(false);
+                _fightOption.SetActive(false);
+                _specialActionsOption.SetActive(false);
+                _runOption.SetActive(false);
                 _displayOptionBox.SetActive(false);
                 
                 _coroutine = CoroutineHost.Instance.StartCoroutine(_gapingHoleMonster.MovesetHandler());
@@ -127,20 +140,41 @@ public class BattleManager : MonoBehaviour
 
     private void SelectionUI()
     {
-        if (EventSystem.current == _fightButton)
+        //Show fight options
+        if (EventSystem.current.currentSelectedGameObject == _fightOption)
         {
+            for (int i = 0; i < _selectedLimb.Count; i++)
+            {
+                _selectedLimb[i].SetActive(true);
+            }
 
+
+            
+            _fightButton.onClick.AddListener(FightLimbSelection);
         }
 
-        if (EventSystem.current == _specialActionsButton)
+        //Show special actions options
+        if (EventSystem.current.currentSelectedGameObject == _specialActionsOption)
         {
-
+            for (int i = 0; i < _selectedLimb.Count; i++)
+            {
+                _selectedLimb[i].SetActive(false);
+            }
         }
 
-        if (EventSystem.current == _runButton)
+        //Show confirmation to run
+        if (EventSystem.current.currentSelectedGameObject == _runOption)
         {
-
+            for (int i = 0; i < _selectedLimb.Count; i++)
+            {
+                _selectedLimb[i].SetActive(false);
+            }
         }
 
+    }
+
+    private void FightLimbSelection()
+    {
+        EventSystem.current.SetSelectedGameObject(_selectedLimb[0]);
     }
 }
