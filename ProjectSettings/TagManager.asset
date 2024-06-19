@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 2
   tags:
   - Monster1
+  - Enemy
   layers:
   - Default
   - TransparentFX
@@ -12,7 +13,7 @@ TagManager:
   - 
   - Water
   - UI
-  - 
+  - Objects
   - 
   - 
   - 
@@ -44,4 +45,16 @@ TagManager:
     locked: 0
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Objects (back)
+    uniqueID: 2084910863
+    locked: 0
+  - name: Teleporters
+    uniqueID: 1109509025
+    locked: 0
+  - name: Player
+    uniqueID: 3679741025
+    locked: 0
+  - name: Objects (front)
+    uniqueID: 2871669145
     locked: 0
