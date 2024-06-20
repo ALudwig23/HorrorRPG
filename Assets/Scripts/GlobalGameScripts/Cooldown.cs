@@ -11,8 +11,14 @@ public class Cooldown
     public CooldownProgress CurrentProgress = CooldownProgress.Ready;
 
     public float Duration = 1f;
-    public float TimeLeft { get { return _currentDuration; } }
-    public bool IsOnCooldown { get { return _inOnCooldown; } }
+    public float TimeLeft 
+    { 
+        get { return _currentDuration; } 
+    }
+    public bool IsOnCooldown 
+    {
+        get { return _inOnCooldown; }
+    }
 
     private float _currentDuration = 0f;
 
