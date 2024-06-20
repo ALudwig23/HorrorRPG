@@ -5,11 +5,16 @@ using UnityEngine.SceneManagement;
 
 public class EnemyMovement : MonoBehaviour
 {
-    public Transform player; // the chasing target
-    public float chaseRadius = 5.0f; // Radius within which the enemy starts chasing
-    public float moveSpeed = 2.0f; // Enemy's speed
+    [SerializeField] private Transform player; // The chasing target
+    [SerializeField] private float chaseRadius = 5.0f; // Radius within which the enemy starts chasing
+    [SerializeField] private float moveSpeed = 2.0f; // Enemy's speed
 
-    private bool isChasing = false; // is it still chasing?
+    [SerializeField] private bool isChasing = false; // is it still chasing?
+
+    private void Start()
+    {
+        player = GameObject.FindWithTag("Player").transform;
+    }
 
     void Update() // what it will be doing if it is chasing and not chasing
     {
@@ -48,7 +53,7 @@ public class EnemyMovement : MonoBehaviour
         if (collision.gameObject.tag == "Player")
         {
             //Destroy(collision.gameObject); to destroy player
-            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+            //SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
 
 

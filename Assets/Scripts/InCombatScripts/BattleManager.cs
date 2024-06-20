@@ -67,7 +67,7 @@ public class BattleManager : MonoBehaviour
 
     void Update()
     {
-        //Debug.Log(EventSystem.current);
+        Debug.Log(EventSystem.current);
         SelectionUI();
     }
 
@@ -301,6 +301,7 @@ public class BattleManager : MonoBehaviour
                         _battleState = BattleState.MonsterTurn;
                         _monsterLimbsUIActive = false;
                         StartCoroutine(HandleState());
+                        EventSystem.current.SetSelectedGameObject(null);
                     }
                 }
             }
@@ -322,6 +323,7 @@ public class BattleManager : MonoBehaviour
                         _battleState = BattleState.MonsterTurn;
                         _monsterLimbsUIActive = false;
                         StartCoroutine(HandleState());
+                        EventSystem.current.SetSelectedGameObject(null);
                     }
                 }
             }
@@ -343,6 +345,7 @@ public class BattleManager : MonoBehaviour
                         _battleState = BattleState.MonsterTurn;
                         _monsterLimbsUIActive = false;
                         StartCoroutine(HandleState());
+                        EventSystem.current.SetSelectedGameObject(null);
                     }
                 }
             }

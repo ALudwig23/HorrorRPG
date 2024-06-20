@@ -5,9 +5,6 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 0
-    path: Assets/Scenes/DemoBattleScene.unity
-    guid: abfc5bc1818d587489aebd492697140e
   - enabled: 1
     path: Assets/Scenes/InCombat.unity
     guid: bfcdfd985bd99594ba27cb7ff8ac2cb1
@@ -15,15 +12,12 @@ EditorBuildSettings:
     path: Assets/Scenes/MainMenu.unity
     guid: 69cc75f291a913e49acab91cb8af5dfc
   - enabled: 1
-    path: Assets/Scenes/Testing.unity
-    guid: 46b5684edf912ef41a8168e3d8955de9
-  - enabled: 1
-    path: Assets/Scenes/Jasonlevelselectscene.unity
+    path: Assets/Scenes/LevelSelect.unity
     guid: 2b1e0e162f92dcc469b9845c4f1b832d
   - enabled: 1
-    path: Assets/Scenes/jasontestground.unity
+    path: Assets/Scenes/TestGrounds.unity
     guid: c448adb14dddea443a24812e8b3c1818
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Jasonblackafscene.unity
     guid: b31e0baee245edc43b9af4a23e4c9794
   m_configObjects: {}

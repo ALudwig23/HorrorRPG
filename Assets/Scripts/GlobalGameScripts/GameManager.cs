@@ -19,6 +19,7 @@ public class GameManager : MonoBehaviour
 
     //Scripts reference
     [SerializeField] private CheckPlayerCollision _checkPlayerCollision;
+    [SerializeField] private TeleportTrigger _teleportTrigger;
     [SerializeField] private PlayerMovement _playerMovement;
     [SerializeField] private BattleManager _battleManager;
 
@@ -52,7 +53,7 @@ public class GameManager : MonoBehaviour
 
     private void FixedUpdate()
     {
-        CameraManager();
+        //CameraManager();
         InGameScenesManager();
     }
 
@@ -76,7 +77,7 @@ public class GameManager : MonoBehaviour
         Application.Quit();
     }
 
-    private void CameraManager()
+    /*private void CameraManager()
     {
         //Only run when not in battle or main menu
         if (Instance._currentRoomScene < 2)
@@ -92,7 +93,7 @@ public class GameManager : MonoBehaviour
         {
             _playerCamera.AddComponent<PlayerCamera>();
         }
-    }
+    }*/
 
     //Manager for in game scenes
     private void InGameScenesManager()
@@ -107,7 +108,7 @@ public class GameManager : MonoBehaviour
             }
         }
         
-        Debug.Log($"Current Room = {Instance._currentRoomScene}");
+        //Debug.Log($"Current Room = {Instance._currentRoomScene}");
         //Exit combat and return player to current room
         if (_battleManager == null)
         {
@@ -127,13 +128,22 @@ public class GameManager : MonoBehaviour
     {
         if (_checkPlayerCollision == null)
         {
-            //Assign CheckPlayerCollision to the script
             _checkPlayerCollision = FindObjectOfType<CheckPlayerCollision>();
         }
-        if (_checkPlayerCollision == null)
-            return;
+        
+        if (_teleportTrigger == null)
+        {
+            _teleportTrigger = FindObjectOfType<TeleportTrigger>();
+        }
 
-        _collidedMonsterType = _checkPlayerCollision.CollidedMonsterType;
+        if (_checkPlayerCollision != null)
+        {
+            _collidedMonsterType = _checkPlayerCollision.CollidedMonsterType;
+        }
+        
+        if (_teleportTrigger != null && _teleportTrigger.IsTeleporting == true)
+        {
+            Instance._currentRoomScene = _teleportTrigger.LoadScene;
+        }
     } 
-
 }
