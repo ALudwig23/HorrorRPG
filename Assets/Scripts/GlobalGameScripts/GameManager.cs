@@ -45,11 +45,15 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    private void Update()
+    {
+        CollisionHandler();
+    }
+
     private void FixedUpdate()
     {
         CameraManager();
         InGameScenesManager();
-        CollisionHandler();
     }
 
     //Function for starting the game (used for start button)
@@ -93,35 +97,39 @@ public class GameManager : MonoBehaviour
     //Manager for in game scenes
     private void InGameScenesManager()
     {
+        //Check if player collided with enemy
+        if (_checkPlayerCollision != null)
+        {
+            if (_checkPlayerCollision.CollidedWithMonster == true)
+            {
+                Debug.Log("Loading Combat Scene");
+                SceneManager.LoadScene(Instance._combatScene);
+            }
+        }
+        
+        Debug.Log($"Current Room = {Instance._currentRoomScene}");
+        //Exit combat and return player to current room
+        if (_battleManager == null)
+        {
+            _battleManager = FindObjectOfType<BattleManager>();
+        }
+        if (_battleManager == null)
+            return;
+
+        if (_battleManager.BattleWon == true)
+        {
+            SceneManager.LoadScene(Instance._currentRoomScene);
+        }
+
+    }
+
+    public void CollisionHandler()
+    {
         if (_checkPlayerCollision == null)
         {
             //Assign CheckPlayerCollision to the script
             _checkPlayerCollision = FindObjectOfType<CheckPlayerCollision>();
         }
-
-        if (_checkPlayerCollision == null)
-            return;
-
-        //Check if player collided with enemy
-        if (_checkPlayerCollision.CollidedWithMonster == true)
-        {
-            Debug.Log("Loading Combat Scene");
-            SceneManager.LoadScene(Instance._combatScene);
-        }
-
-        //Exit combat and return player to current room
-        if (_battleManager != null)
-        {
-            if (_battleManager.BattleWon == true)
-            {
-                SceneManager.LoadScene(Instance._currentRoomScene);
-            }
-        }
-        
-    }
-
-    public void CollisionHandler()
-    {
         if (_checkPlayerCollision == null)
             return;
 

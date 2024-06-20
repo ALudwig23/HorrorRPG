@@ -31,6 +31,17 @@ public class DialogueTypingManager
         _coroutine = CoroutineHost.Instance.StartCoroutine(TypingDialogue(dialogue, dialogueText));
     }
 
+    public void StopDialogue()
+    {
+        if (_coroutine != null)
+        {
+            CoroutineHost.Instance.StopCoroutine(_coroutine);
+        }
+
+        _coroutine = null;
+        _toNextDialogue = false;
+    }
+
     private IEnumerator TypingDialogue(string dialogue, TMP_Text dialogueText)
     {
         _dialogueText = dialogueText;

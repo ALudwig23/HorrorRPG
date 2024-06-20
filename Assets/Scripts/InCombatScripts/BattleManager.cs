@@ -11,7 +11,10 @@ public class BattleManager : MonoBehaviour
 {
     private enum BattleState { PlayerTurn, MonsterTurn, BattleEnd}
     [SerializeField] private BattleState _battleState;
+
+    private float _waitTime = 0.1f;
     private bool _battleWon;
+    private bool _monsterLimbsUIActive = false;
     private string _text;
     public bool BattleWon
     {
@@ -64,23 +67,8 @@ public class BattleManager : MonoBehaviour
 
     void Update()
     {
-        
-        
-    }
-
-    private void FixedUpdate()
-    {
         //Debug.Log(EventSystem.current);
-        if (_battleState == BattleState.PlayerTurn)
-        {
-            SelectionUI();
-        }
-
-        if (_spawnPositionMid == null)
-        {
-            _battleState = BattleState.BattleEnd;
-            StartCoroutine(MonsterSetup());
-        }
+        SelectionUI();
     }
 
     private IEnumerator MonsterSetup()
@@ -162,8 +150,8 @@ public class BattleManager : MonoBehaviour
     private IEnumerator HandleState()
     {
         //Allow objects to load in before proceeding
-        yield return new WaitForSeconds(0.1f);
-
+        yield return new WaitForSeconds(_waitTime);
+        Debug.Log("Handling State");
         switch (_battleState)
         {
             case BattleState.PlayerTurn:
@@ -173,6 +161,7 @@ public class BattleManager : MonoBehaviour
                 _runOption.SetActive(true);
                 _displayOptionBox.SetActive(true);
 
+                StopAllCoroutines();
                 EventSystem.current.SetSelectedGameObject(_fightOption);
                 break;
 
@@ -182,67 +171,91 @@ public class BattleManager : MonoBehaviour
                 _specialActionsOption.SetActive(false);
                 _runOption.SetActive(false);
                 _displayOptionBox.SetActive(false);
-                
+
+                for (int i = 0; i < _selectedLimb.Count; i++)
+                {
+                    _selectedLimb[i].SetActive(false);
+                }
+
                 if (_gapingHoleMonster != null)
                 {
-                    _coroutine = CoroutineHost.Instance.StartCoroutine(_gapingHoleMonster.MovesetHandler());
+                    //Wait for previous dialogue to finish
+                    Debug.Log(_dialogueTypingManager.ToNextDialogue);
                     yield return new WaitUntil(() => _gapingHoleMonster.FinishedDialogue == true);
+                    
+                    _gapingHoleMonster.FinishedDialogue = false;
+
+                    StartCoroutine(_gapingHoleMonster.OnDamage());
+                    yield return new WaitUntil(() => _gapingHoleMonster.FinishedDialogue == true);
+
+                    _gapingHoleMonster.FinishedDialogue = false;
+                    _gapingHoleMonster.OnDeath();
+
+                    //End early if enemy or player dies
+                    if (_gapingHoleMonster.MonsterDied == true || _playerStats.CurrentHealth <= 0f)
+                    {
+                        _battleState = BattleState.BattleEnd;
+                        StartCoroutine(HandleState());
+                    }
+                    else
+                    {
+                        StartCoroutine(_gapingHoleMonster.MovesetHandler());
+                        yield return new WaitUntil(() => _gapingHoleMonster.FinishedDialogue == true);
+
+                        _gapingHoleMonster.FinishedDialogue = false;
+
+                        _battleState = BattleState.PlayerTurn;
+                        StartCoroutine(HandleState());
+                    }
                 }
-                  
-                _battleState = BattleState.PlayerTurn;
-                StopCoroutine(HandleState());
-                StartCoroutine(HandleState());
                 break;
 
             case BattleState.BattleEnd:
 
-                if (_playerStats.CurrentHealth > 0)
+                if (_playerStats.CurrentHealth > 0f)
                 {
+                    _dialogueTypingManager.StopDialogue();
+                    _text = "You killed the monster...";
+                    _dialogueTypingManager.StartDialogue(_text, _dialogueText);
+                    yield return new WaitUntil(() => _dialogueTypingManager.ToNextDialogue == true);
+
                     _battleWon = true;
                 }
-
-                if (_playerStats.CurrentHealth < 0)
+                else if (_playerStats.CurrentHealth <= 0f)
                 {
+                    _dialogueTypingManager.StopDialogue();
+                    _text = "You died...";
+                    _dialogueTypingManager.StartDialogue(_text, _dialogueText);
+                    yield return new WaitUntil(() => _dialogueTypingManager.ToNextDialogue == true);
+
                     _battleWon = false;
                 }
                 break;
-
         }
     }
 
     private void SelectionUI()
     {
         //Show fight options
-        if (EventSystem.current.currentSelectedGameObject == _fightOption)
+        if (_battleState == BattleState.PlayerTurn && EventSystem.current.currentSelectedGameObject == _fightOption)
         {
             for (int i = 0; i < _selectedLimb.Count; i++)
             {
                 _selectedLimb[i].SetActive(true);
             }
 
-            if (Input.GetKey(KeyCode.Return))
+            if (Input.GetKeyDown(KeyCode.Return))
             {
                 EventSystem.current.SetSelectedGameObject(_selectedLimb[0]);
-            }
-        }
 
-        //Limb Selection Function
-        if (_gapingHoleMonster != null)
-        {
-            if (EventSystem.current.currentSelectedGameObject == _selectedLimb[0])
-            {
-                if (Input.GetKey(KeyCode.Return) && _gapingHoleMonster.LeftLegHealth <= 0)
+                if (_monsterLimbsUIActive == false)
                 {
-                    _text = "This part has already been destroyed";
-                    _dialogueTypingManager.StartDialogue(_text, _dialogueText);
-                }
-                else if (Input.GetKey(KeyCode.Return))
-                {
-                    StartCoroutine(_gapingHoleMonster.LeftLegDamaged());
+                    Debug.Log("ActiveUI");
+                    _monsterLimbsUIActive = true;
+                    StartCoroutine(MonsterLimbsUI());
                 }
             }
         }
-
         //Show special actions options
         if (EventSystem.current.currentSelectedGameObject == _specialActionsOption)
         {
@@ -260,7 +273,80 @@ public class BattleManager : MonoBehaviour
                 _selectedLimb[i].SetActive(false);
             }
         }
-
     }
 
+    private IEnumerator MonsterLimbsUI()
+    {
+        yield return new WaitForSeconds(_waitTime);
+
+        Debug.Log("MonsterLimbUIActive");
+        //GapingHoleMonster Selection
+        while (_gapingHoleMonster != null)
+        {
+            if (EventSystem.current.currentSelectedGameObject == _selectedLimb[0])
+            {
+                if (Input.GetKeyDown(KeyCode.Return))
+                {
+                    if (_gapingHoleMonster.LeftLegHealth <= 0)
+                    {
+                        _dialogueTypingManager.StopDialogue();
+                        _text = "This part has already been destroyed";
+                        _dialogueTypingManager.StartDialogue(_text, _dialogueText);
+                    }
+                    else
+                    {
+                        _dialogueTypingManager.StopDialogue();
+                        StartCoroutine(_gapingHoleMonster.LeftLegDamaged());
+
+                        _battleState = BattleState.MonsterTurn;
+                        _monsterLimbsUIActive = false;
+                        StartCoroutine(HandleState());
+                    }
+                }
+            }
+            else if (EventSystem.current.currentSelectedGameObject == _selectedLimb[1])
+            {
+                if (Input.GetKeyDown(KeyCode.Return))
+                {
+                    if (_gapingHoleMonster.RightLegHealth <= 0)
+                    {
+                        _dialogueTypingManager.StopDialogue();
+                        _text = "This part has already been destroyed";
+                        _dialogueTypingManager.StartDialogue(_text, _dialogueText);
+                    }
+                    else
+                    {
+                        _dialogueTypingManager.StopDialogue();
+                        StartCoroutine(_gapingHoleMonster.RightLegDamaged());
+
+                        _battleState = BattleState.MonsterTurn;
+                        _monsterLimbsUIActive = false;
+                        StartCoroutine(HandleState());
+                    }
+                }
+            }
+            else if (EventSystem.current.currentSelectedGameObject == _selectedLimb[2])
+            {
+                if (Input.GetKeyDown(KeyCode.Return))
+                {
+                    if (_gapingHoleMonster.HeadHealth <= 0)
+                    {
+                        _dialogueTypingManager.StopDialogue();
+                        _text = "This part has already been destroyed";
+                        _dialogueTypingManager.StartDialogue(_text, _dialogueText);
+                    }
+                    else
+                    {
+                        _dialogueTypingManager.StopDialogue();
+                        StartCoroutine(_gapingHoleMonster.HeadDamaged());
+
+                        _battleState = BattleState.MonsterTurn;
+                        _monsterLimbsUIActive = false;
+                        StartCoroutine(HandleState());
+                    }
+                }
+            }
+            yield return null;
+        }
+    }
 }

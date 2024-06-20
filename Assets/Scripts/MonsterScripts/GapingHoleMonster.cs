@@ -17,6 +17,9 @@ public class GapingHoleMonster : MonoBehaviour
     private string _text;
     private bool _finishedDialogue = false;
     private bool _monsterDied = false;
+    private bool _leftLegDestroyed = false;
+    private bool _rightLegDestroyed = false;
+    private bool _headDestroyed = false;
 
     [SerializeField] private GameObject _leftLimbSelection;
     [SerializeField] private GameObject _rightLimbSelection;
@@ -89,10 +92,17 @@ public class GapingHoleMonster : MonoBehaviour
 
 
     }
-
+    public void OnDeath()
+    {
+        if (_currentHealth <= 0)
+        {
+            _monsterDied = true;
+            Destroy(gameObject);
+        }
+    }
     public IEnumerator OnDamage()
     {
-        if (_leftLegHealth <= 0)
+        if (_leftLegHealth <= 0 && _leftLegDestroyed == false)
         {
             _currentHealth -= _maxHealth / 4f;
 
@@ -102,7 +112,7 @@ public class GapingHoleMonster : MonoBehaviour
 
         }
 
-        if (_rightLegHealth <= 0)
+        if (_rightLegHealth <= 0 && _rightLegDestroyed == false)
         {
             _currentHealth -= _maxHealth / 4f;
 
@@ -111,7 +121,7 @@ public class GapingHoleMonster : MonoBehaviour
             yield return new WaitUntil(() => _dialogueTypingManager.ToNextDialogue == true);
         }
 
-        if (_headHealth <= 0)
+        if (_headHealth <= 0 && _headDestroyed == false)
         {
             _currentHealth -= _maxHealth / 2f;
 
@@ -120,12 +130,9 @@ public class GapingHoleMonster : MonoBehaviour
             yield return new WaitUntil(() => _dialogueTypingManager.ToNextDialogue == true);
         }
 
-        if (_currentHealth <= 0)
-        {
-            _monsterDied = true;
-            Destroy(gameObject);
-        }
+        
 
+        _finishedDialogue = true;
     }
 
     public IEnumerator MovesetHandler()
@@ -154,7 +161,7 @@ public class GapingHoleMonster : MonoBehaviour
             case 1:
 
                 Debug.Log("Lunge");
-                _playerStats.CurrentSanity -= _sanityDamage;
+                _playerStats.CurrentHealth -= _damage;
                 Debug.Log("Damaged");
 
                 _text = $"The creature lunges towards you";
@@ -166,7 +173,6 @@ public class GapingHoleMonster : MonoBehaviour
                 //yield return new WaitUntil(() => _dialogueTypingManager.ToNextDialogue == true);
 
                 _finishedDialogue = true;
-                _playerStats.CurrentHealth -= _damage;
                 break;
         }
     }
@@ -283,6 +289,8 @@ public class GapingHoleMonster : MonoBehaviour
         _text = $"The creature's left leg takes damage";
         _dialogueTypingManager.StartDialogue(_text, _dialogueText);
         yield return new WaitUntil(() => _dialogueTypingManager.ToNextDialogue == true);
+
+        _finishedDialogue = true;
     }
 
     public IEnumerator RightLegDamaged()
@@ -293,6 +301,8 @@ public class GapingHoleMonster : MonoBehaviour
         _text = $"The creature's right leg takes damage";
         _dialogueTypingManager.StartDialogue(_text, _dialogueText);
         yield return new WaitUntil(() => _dialogueTypingManager.ToNextDialogue == true);
+
+        _finishedDialogue = true;
     }
 
 
@@ -301,9 +311,11 @@ public class GapingHoleMonster : MonoBehaviour
         _headHealth -= _playerStats.Damage;
         _currentHealth -= _playerStats.Damage;
 
-        _text = $"The creature's head takes damage'";
+        _text = $"The creature's head takes damage";
         _dialogueTypingManager.StartDialogue(_text, _dialogueText);
         yield return new WaitUntil(() => _dialogueTypingManager.ToNextDialogue == true);
+
+        _finishedDialogue = true;
     }
 }
 
