@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class EnemyMovement : MonoBehaviour
 {
@@ -42,4 +43,14 @@ public class EnemyMovement : MonoBehaviour
         Gizmos.DrawWireSphere(transform.position, chaseRadius);
     }
 
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.tag == "Player")
+        {
+            //Destroy(collision.gameObject); to destroy player
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        }
+
+
+    }
 }

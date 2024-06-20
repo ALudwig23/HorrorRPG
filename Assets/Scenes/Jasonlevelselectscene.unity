@@ -667,6 +667,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2987405009236270590, guid: 28f4f33018def3d46aea0d5b47d30e73, type: 3}
+      propertyPath: LoadLevel
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 2987405009236270590, guid: 28f4f33018def3d46aea0d5b47d30e73, type: 3}
       propertyPath: sceneToLoad
       value: 4
       objectReference: {fileID: 0}
