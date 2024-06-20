@@ -8,6 +8,12 @@ public class GameManager : MonoBehaviour
 {
     private int _currentRoomScene = 1;
     private int _combatScene = 0;
+    private string _collidedMonsterType;
+
+    public string CollidedMonsterType
+    {
+        get { return _collidedMonsterType; }
+    }
 
     [SerializeField] private Camera _playerCamera;
 
@@ -37,6 +43,11 @@ public class GameManager : MonoBehaviour
             }
             return _instance;
         }
+    }
+
+    private void Update()
+    {
+        CollisionHandler();
     }
 
     private void FixedUpdate()
@@ -71,7 +82,7 @@ public class GameManager : MonoBehaviour
         if (Instance._currentRoomScene < 2)
             return;
 
-        if (_playerCamera != null)
+        if (_playerCamera == null)
             return;
 
         //Find Camera and add Player Camera script
@@ -86,31 +97,43 @@ public class GameManager : MonoBehaviour
     //Manager for in game scenes
     private void InGameScenesManager()
     {
+        //Check if player collided with enemy
+        if (_checkPlayerCollision != null)
+        {
+            if (_checkPlayerCollision.CollidedWithMonster == true)
+            {
+                Debug.Log("Loading Combat Scene");
+                SceneManager.LoadScene(Instance._combatScene);
+            }
+        }
+        
+        Debug.Log($"Current Room = {Instance._currentRoomScene}");
+        //Exit combat and return player to current room
+        if (_battleManager == null)
+        {
+            _battleManager = FindObjectOfType<BattleManager>();
+        }
+        if (_battleManager == null)
+            return;
+
+        if (_battleManager.BattleWon == true)
+        {
+            SceneManager.LoadScene(Instance._currentRoomScene);
+        }
+
+    }
+
+    public void CollisionHandler()
+    {
         if (_checkPlayerCollision == null)
         {
             //Assign CheckPlayerCollision to the script
             _checkPlayerCollision = FindObjectOfType<CheckPlayerCollision>();
         }
-
         if (_checkPlayerCollision == null)
             return;
 
-        //Check if player collided with enemy
-        if (_checkPlayerCollision.CollidedWithMonster == true)
-        {
-            Debug.Log("Loading Combat Scene");
-            SceneManager.LoadScene(Instance._combatScene);
-        }
-
-        //Exit combat and return player to current room
-        if (_battleManager != null)
-        {
-            if (_battleManager.BattleWon == true)
-            {
-                SceneManager.LoadScene(Instance._currentRoomScene);
-            }
-        }
-        
-    }
+        _collidedMonsterType = _checkPlayerCollision.CollidedMonsterType;
+    } 
 
 }
