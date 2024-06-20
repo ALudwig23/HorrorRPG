@@ -1155,8 +1155,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
-  m_Type: 1
+  m_Sprite: {fileID: -5877817536159294332, guid: f2e4e41b1c3a48c4e96da7ff9d352857, type: 3}
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -1219,6 +1219,7 @@ MonoBehaviour:
   _statusEffect: {fileID: 1741041942}
   _sanityBar: {fileID: 1900409432}
   _dialogueBox: {fileID: 1309150155}
+  _dialogueText: {fileID: 1489788175}
   _gapingHoleMonster: {fileID: 0}
   _playerStats: {fileID: 0}
   _dialogueTypingManager:
@@ -1877,8 +1878,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
-  m_Type: 1
+  m_Sprite: {fileID: -5877817536159294332, guid: f2e4e41b1c3a48c4e96da7ff9d352857, type: 3}
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -2111,7 +2112,7 @@ GameObject:
   - component: {fileID: 1489788176}
   - component: {fileID: 1489788175}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: DialogueText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3102,8 +3103,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
-  m_Type: 1
+  m_Sprite: {fileID: -5877817536159294332, guid: f2e4e41b1c3a48c4e96da7ff9d352857, type: 3}
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4

@@ -5,10 +5,11 @@ using UnityEngine;
 [CreateAssetMenu]
 public class PlayerStats : ScriptableObject
 {
-    [SerializeField] private float _maxHealth = 100;
-    [SerializeField] private float _currentHealth = 100;
-    [SerializeField] private float _maxSanity = 150;
-    [SerializeField] private float _currentSanity = 150;
+    [SerializeField] private float _maxHealth = 100f;
+    [SerializeField] private float _currentHealth = 100f;
+    [SerializeField] private float _maxSanity = 150f;
+    [SerializeField] private float _currentSanity = 150f;
+    [SerializeField] private float _damage = 20f;
 
     public float MaxHealth
     {
@@ -27,5 +28,9 @@ public class PlayerStats : ScriptableObject
     {
         get { return _currentSanity; }
         set { _currentSanity = value; }
+    }
+    public float Damage
+    {
+        get { return _damage; }
     }
 }

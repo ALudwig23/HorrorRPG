@@ -6,13 +6,17 @@ using UnityEngine.UI;
 
 public class GapingHoleMonster : MonoBehaviour
 {
-    private float _maxHealth;
-    private float _currentHealth;
+    private float _maxHealth = 200f;
+    private float _currentHealth = 200f;
+    private float _leftLegHealth = 25f;
+    private float _rightLegHealth = 25f;
+    private float _headHealth = 50f;
     private float _damage = 10;
     private float _sanityDamage = 10;
     private int _movesRandomizer;
     private string _text;
     private bool _finishedDialogue = false;
+    private bool _monsterDied = false;
 
     [SerializeField] private GameObject _leftLimbSelection;
     [SerializeField] private GameObject _rightLimbSelection;
@@ -33,6 +37,18 @@ public class GapingHoleMonster : MonoBehaviour
         get { return _currentHealth; }
         set { _currentHealth = value; }
     }
+    public float LeftLegHealth
+    {
+        get { return _leftLegHealth; }
+    }
+    public float RightLegHealth
+    {
+        get { return _rightLegHealth; }
+    }
+    public float HeadHealth
+    {
+        get { return _headHealth; }
+    }
     public float Damage
     {
         get { return _damage; }
@@ -45,6 +61,10 @@ public class GapingHoleMonster : MonoBehaviour
     {
         get { return _finishedDialogue; }
         set { _finishedDialogue = value; }
+    }
+    public bool MonsterDied
+    {
+        get { return _monsterDied; }
     }
     public GameObject LeftLimbSelection
     {
@@ -59,22 +79,53 @@ public class GapingHoleMonster : MonoBehaviour
         get { return _headLimbSelection; }
     }
 
-
     void Start()
     {
         _playerStats = Resources.Load<PlayerStats>("PlayerStatsData");
-        //_buttonSprite = Resources.Load<Sprite>("");
+        _buttonSprite = Resources.Load<Sprite>("Unselected");
         _dialogueBox = GameObject.Find("DialogueBox");
         _dialogueText = _dialogueBox.GetComponentInChildren<TMP_Text>();
         _canvas = FindObjectOfType<Canvas>();
+
+
     }
 
-    private void OnDeath()
+    public IEnumerator OnDamage()
     {
+        if (_leftLegHealth <= 0)
+        {
+            _currentHealth -= _maxHealth / 4f;
+
+            _text = $"The creature's left leg is destroyed";
+            _dialogueTypingManager.StartDialogue(_text, _dialogueText);
+            yield return new WaitUntil(() => _dialogueTypingManager.ToNextDialogue == true);
+
+        }
+
+        if (_rightLegHealth <= 0)
+        {
+            _currentHealth -= _maxHealth / 4f;
+
+            _text = $"The creature's right leg is destroyed";
+            _dialogueTypingManager.StartDialogue(_text, _dialogueText);
+            yield return new WaitUntil(() => _dialogueTypingManager.ToNextDialogue == true);
+        }
+
+        if (_headHealth <= 0)
+        {
+            _currentHealth -= _maxHealth / 2f;
+
+            _text = $"The creature's head is destroyed";
+            _dialogueTypingManager.StartDialogue(_text, _dialogueText);
+            yield return new WaitUntil(() => _dialogueTypingManager.ToNextDialogue == true);
+        }
+
         if (_currentHealth <= 0)
         {
+            _monsterDied = true;
             Destroy(gameObject);
         }
+
     }
 
     public IEnumerator MovesetHandler()
@@ -136,7 +187,7 @@ public class GapingHoleMonster : MonoBehaviour
         
         //Set image for button
         Image leftLegButtonImage = _leftLimbSelection.AddComponent<Image>();
-        //leftLegButtonImage.sprite = _buttonSprite;
+        leftLegButtonImage.sprite = _buttonSprite;
 
         //Create child object
         GameObject leftLegChild = new GameObject("LeftLegChild");
@@ -170,7 +221,7 @@ public class GapingHoleMonster : MonoBehaviour
 
         //Set image for button
         Image rightLegButtonImage = _rightLimbSelection.AddComponent<Image>();
-        //rightLegButtonImage.sprite = _buttonSprite;
+        rightLegButtonImage.sprite = _buttonSprite;
 
         //Create child object
         GameObject rightLegChild = new GameObject("RightLegChild");
@@ -204,7 +255,7 @@ public class GapingHoleMonster : MonoBehaviour
 
         //Set image for button
         Image headButtonImage = _headLimbSelection.AddComponent<Image>();
-        //headButtonImage.sprite = _buttonSprite;
+        headButtonImage.sprite = _buttonSprite;
 
         //Create child object
         GameObject headChild = new GameObject("headChild");
@@ -223,4 +274,36 @@ public class GapingHoleMonster : MonoBehaviour
         headTextRectTransform.sizeDelta = headRectTransform.sizeDelta;
         headTextRectTransform.localScale = headRectTransform.localScale;
     }
+
+    public IEnumerator LeftLegDamaged()
+    {
+        _leftLegHealth -= _playerStats.Damage;
+        _currentHealth -= _playerStats.Damage;
+
+        _text = $"The creature's left leg takes damage";
+        _dialogueTypingManager.StartDialogue(_text, _dialogueText);
+        yield return new WaitUntil(() => _dialogueTypingManager.ToNextDialogue == true);
+    }
+
+    public IEnumerator RightLegDamaged()
+    {
+        _rightLegHealth -= _playerStats.Damage;
+        _currentHealth -= _playerStats.Damage;
+        
+        _text = $"The creature's right leg takes damage";
+        _dialogueTypingManager.StartDialogue(_text, _dialogueText);
+        yield return new WaitUntil(() => _dialogueTypingManager.ToNextDialogue == true);
+    }
+
+
+    public IEnumerator HeadDamaged()
+    {
+        _headHealth -= _playerStats.Damage;
+        _currentHealth -= _playerStats.Damage;
+
+        _text = $"The creature's head takes damage'";
+        _dialogueTypingManager.StartDialogue(_text, _dialogueText);
+        yield return new WaitUntil(() => _dialogueTypingManager.ToNextDialogue == true);
+    }
 }
+
