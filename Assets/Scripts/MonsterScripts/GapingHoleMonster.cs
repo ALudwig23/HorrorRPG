@@ -104,6 +104,7 @@ public class GapingHoleMonster : MonoBehaviour
     {
         if (_leftLegHealth <= 0 && _leftLegDestroyed == false)
         {
+            _leftLegDestroyed = true;
             _currentHealth -= _maxHealth / 4f;
 
             _text = $"The creature's left leg is destroyed";
@@ -114,6 +115,7 @@ public class GapingHoleMonster : MonoBehaviour
 
         if (_rightLegHealth <= 0 && _rightLegDestroyed == false)
         {
+            _rightLegDestroyed = true;
             _currentHealth -= _maxHealth / 4f;
 
             _text = $"The creature's right leg is destroyed";
@@ -123,6 +125,7 @@ public class GapingHoleMonster : MonoBehaviour
 
         if (_headHealth <= 0 && _headDestroyed == false)
         {
+            _headDestroyed = true;
             _currentHealth -= _maxHealth / 2f;
 
             _text = $"The creature's head is destroyed";
