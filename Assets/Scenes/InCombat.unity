@@ -1336,6 +1336,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _battleState: 0
+  _buttonSprite: {fileID: 0}
+  _canvas: {fileID: 126266980}
+  _previousSelection: {fileID: 0}
   _spawnPositionMid: {fileID: 74434124}
   _spawnPositionRight: {fileID: 109799952}
   _spawnPositionLeft: {fileID: 1840313738}
@@ -1345,8 +1348,12 @@ MonoBehaviour:
   _specialActionsButton: {fileID: 734820291}
   _runOption: {fileID: 1749013462}
   _runButton: {fileID: 1749013464}
-  _selectedMonster: {fileID: 0}
-  _selectedLimb: []
+  _selectedMonsterLeft: {fileID: 0}
+  _selectedMonsterMiddle: {fileID: 0}
+  _selectedMonsterRight: {fileID: 0}
+  _selectedLimbLeftMonster: []
+  _selectedLimbMiddleMonster: []
+  _selectedLimbRightMonster: []
   _displayOptionBox: {fileID: 1453854544}
   _playerHealth: {fileID: 452676511}
   _statusEffect: {fileID: 0}
