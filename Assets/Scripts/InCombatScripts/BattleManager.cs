@@ -232,8 +232,9 @@ public class BattleManager : MonoBehaviour
                 middleSelectTextRect.sizeDelta = middleSelectRect.sizeDelta;
                 middleSelectTextRect.localScale = middleSelectRect.localScale;
 
-                Navigation onMonsterMiddle = _selectedMonsterMiddle.GetComponent<Navigation>();
-                onMonsterMiddle.mode = Navigation.Mode.Explicit;
+                Navigation middleSelectButtonNavigation= middleSelectButton.navigation;
+                middleSelectButtonNavigation.mode = Navigation.Mode.Explicit;
+                middleSelectButton.navigation = middleSelectButtonNavigation;
 
                 if (_selectedLimbLeftMonster != null)
                 {
@@ -436,6 +437,8 @@ public class BattleManager : MonoBehaviour
             {
                 if (Input.GetKeyDown(KeyCode.Return))
                 {
+                    _previousSelection = EventSystem.current.currentSelectedGameObject;
+
                     if (_selectedMonsterLeft != null)
                     {
                         _selectedMonsterLeft.SetActive(false);
@@ -471,6 +474,8 @@ public class BattleManager : MonoBehaviour
             {
                 if (Input.GetKeyDown(KeyCode.Return))
                 {
+                    _previousSelection = EventSystem.current.currentSelectedGameObject;
+
                     Debug.Log("Selected Middle");
                     if (_selectedMonsterLeft != null)
                     {
@@ -507,6 +512,8 @@ public class BattleManager : MonoBehaviour
             {
                 if (Input.GetKeyDown(KeyCode.Return))
                 {
+                    _previousSelection = EventSystem.current.currentSelectedGameObject;
+
                     if (_selectedMonsterLeft != null)
                     {
                         _selectedMonsterLeft.SetActive(false);
