@@ -12,14 +12,22 @@ public class BattleManager : MonoBehaviour
     private enum BattleState { PlayerTurn, MonsterTurn, BattleEnd}
     [SerializeField] private BattleState _battleState;
 
+    private float _miniTimer = 1f;
     private float _waitTime = 0.1f;
+    private float _enemyCount;
     private bool _battleWon;
     private bool _monsterLimbsUIActive = false;
     private string _text;
+    private string _displayPlayerHealth;
+    private string _displayPlayerSanity;
     public bool BattleWon
     {
         get { return _battleWon; }
     }
+
+    [SerializeField] private Canvas _canvas;
+    [SerializeField] private GameObject _previousSelection;
+
     //Spawn Position
     [SerializeField] private GameObject _spawnPositionMid;
     [SerializeField] private GameObject _spawnPositionRight;
@@ -34,14 +42,18 @@ public class BattleManager : MonoBehaviour
     [SerializeField] private Button _runButton;
 
     //Fight Options
-    [SerializeField] private GameObject _selectedMonster;
-    [SerializeField] private List<GameObject> _selectedLimb;
+    [SerializeField] private GameObject _selectedMonsterLeft;
+    [SerializeField] private GameObject _selectedMonsterMiddle;
+    [SerializeField] private GameObject _selectedMonsterRight;
+    [SerializeField] private List<GameObject> _selectedLimbLeftMonster;
+    [SerializeField] private List<GameObject> _selectedLimbMiddleMonster;
+    [SerializeField] private List<GameObject> _selectedLimbRightMonster;
 
     //Display UI
     [SerializeField] private GameObject _displayOptionBox;
-    [SerializeField] private GameObject _playerStatus;
+    [SerializeField] private TMP_Text _playerHealth;
     [SerializeField] private GameObject _statusEffect;
-    [SerializeField] private GameObject _sanityBar;
+    [SerializeField] private TMP_Text _playerSanity;
     [SerializeField] private GameObject _dialogueBox;
     [SerializeField] private TMP_Text _dialogueText;
 
@@ -61,6 +73,12 @@ public class BattleManager : MonoBehaviour
         _playerStats = Resources.Load<PlayerStats>("PlayerStatsData");
         _gameManager = FindObjectOfType<GameManager>();
 
+        _displayPlayerHealth = $"HP: {(int)_playerStats.CurrentHealth} / {_playerStats.MaxHealth}";
+        _displayPlayerSanity = $"Sanity: {_playerStats.CurrentSanity} / {_playerStats.MaxSanity}";
+
+        _playerHealth.text = _displayPlayerHealth;
+        _playerSanity.text = _displayPlayerSanity;
+
         StartCoroutine(MonsterSetup());
         StartCoroutine(HandleState());
     }
@@ -69,10 +87,26 @@ public class BattleManager : MonoBehaviour
     {
         Debug.Log(EventSystem.current);
         SelectionUI();
+
+        if (Input.GetKeyDown(KeyCode.Backspace) && _miniTimer == 1f)
+        {
+            EventSystem.current.SetSelectedGameObject(_previousSelection);
+            //----stopped here----
+        }
+    }
+
+    private void CheckSanity()
+    {
+        if (_playerStats.CurrentSanity <= _playerStats.MaxSanity / 4)
+        {
+
+        }
     }
 
     private IEnumerator MonsterSetup()
     {
+        _enemyCount = Random.Range(1, 4);
+
         switch (_gameManager.CollidedMonsterType)
         {
             case "GapingHoleMonster":
@@ -89,14 +123,24 @@ public class BattleManager : MonoBehaviour
 
                 _gapingHoleMonster.CreateLimbTarget();
 
-                _selectedLimb.Add(_gapingHoleMonster.LeftLimbSelection);
-                _selectedLimb.Add(_gapingHoleMonster.RightLimbSelection);
-                _selectedLimb.Add(_gapingHoleMonster.HeadLimbSelection);
+                _selectedLimbMiddleMonster.Add(_gapingHoleMonster.LeftLimbSelection);
+                _selectedLimbMiddleMonster.Add(_gapingHoleMonster.RightLimbSelection);
+                _selectedLimbMiddleMonster.Add(_gapingHoleMonster.HeadLimbSelection);
 
                 //Configure button image and colour
+                //Enemy Selection Button
+                _selectedMonsterMiddle = new GameObject("MiddleMonsterSelect");
+                _selectedMonsterMiddle.transform.SetParent(_canvas.transform, false);
+
+                _selectedMonsterMiddle.AddComponent<Button>();
+
+                RectTransform middleSelectRect = _selectedMonsterLeft.GetComponent<RectTransform>();
+                middleSelectRect.anchoredPosition = new Vector2(-74f, -145.5f);
+                middleSelectRect.sizeDelta = new Vector2(115f, 147f);
+
                 //Left Leg button
-                Button leftLegButton = _selectedLimb[0].GetComponent<Button>();
-                Image leftLegButtonImage = _selectedLimb[0].GetComponent<Image>();
+                Button leftLegButton = _selectedLimbMiddleMonster[0].GetComponent<Button>();
+                Image leftLegButtonImage = _selectedLimbMiddleMonster[0].GetComponent<Image>();
                 ColorBlock selectedColour = leftLegButton.colors; //Main colour for selection
 
                 leftLegButton.targetGraphic = leftLegButtonImage;
@@ -105,16 +149,16 @@ public class BattleManager : MonoBehaviour
                 leftLegButton.colors = selectedColour;
 
                 //Right Leg Button
-                Button rightLegButton = _selectedLimb[1].GetComponent<Button>();
-                Image rightLegButtonImage = _selectedLimb[1].GetComponent<Image>();
+                Button rightLegButton = _selectedLimbMiddleMonster[1].GetComponent<Button>();
+                Image rightLegButtonImage = _selectedLimbMiddleMonster[1].GetComponent<Image>();
 
                 rightLegButton.targetGraphic = rightLegButtonImage;
                 rightLegButton.transition = Selectable.Transition.ColorTint;
                 rightLegButton.colors = selectedColour;
 
                 //Head Button
-                Button headButton = _selectedLimb[2].GetComponent<Button>();
-                Image headButtonImage = _selectedLimb[2].GetComponent<Image>();
+                Button headButton = _selectedLimbMiddleMonster[2].GetComponent<Button>();
+                Image headButtonImage = _selectedLimbMiddleMonster[2].GetComponent<Image>();
 
                 headButton.targetGraphic = headButtonImage;
                 headButton.transition = Selectable.Transition.ColorTint;
@@ -172,9 +216,9 @@ public class BattleManager : MonoBehaviour
                 _runOption.SetActive(false);
                 _displayOptionBox.SetActive(false);
 
-                for (int i = 0; i < _selectedLimb.Count; i++)
+                for (int i = 0; i < _selectedLimbMiddleMonster.Count; i++)
                 {
-                    _selectedLimb[i].SetActive(false);
+                    _selectedLimbMiddleMonster[i].SetActive(false);
                 }
 
                 if (_gapingHoleMonster != null)
@@ -200,6 +244,10 @@ public class BattleManager : MonoBehaviour
                     else
                     {
                         StartCoroutine(_gapingHoleMonster.MovesetHandler());
+                        yield return new WaitUntil(() => _gapingHoleMonster.DamageDealt == true);
+                        _playerHealth.text = _displayPlayerHealth;
+                        _playerSanity.text = _displayPlayerSanity;
+                        _gapingHoleMonster.DamageDealt = false;
                         yield return new WaitUntil(() => _gapingHoleMonster.FinishedDialogue == true);
 
                         _gapingHoleMonster.FinishedDialogue = false;
@@ -239,13 +287,56 @@ public class BattleManager : MonoBehaviour
         //Show fight options
         if (_battleState == BattleState.PlayerTurn && EventSystem.current.currentSelectedGameObject == _fightOption)
         {
-            for (int i = 0; i < _selectedLimb.Count; i++)
+            if (_selectedMonsterLeft != null)
             {
-                _selectedLimb[i].SetActive(true);
+                _selectedMonsterLeft.SetActive(true);
+            }
+            if (_selectedMonsterMiddle != null)
+            {
+                _selectedMonsterRight.SetActive(true);
+            }
+            if (_selectedMonsterMiddle != null)
+            {
+                _selectedMonsterRight.SetActive(true);
             }
 
             if (Input.GetKeyDown(KeyCode.Return))
             {
+                _previousSelection = EventSystem.current.currentSelectedGameObject;
+
+                if (_selectedMonsterLeft != null)
+                {
+                    _selectedMonsterLeft.SetActive(true);
+                    EventSystem.current.SetSelectedGameObject(_selectedMonsterLeft);
+                }
+                if (_selectedMonsterMiddle != null)
+                {
+                    _selectedMonsterMiddle.SetActive(true);
+
+                    if (_selectedMonsterLeft == null)
+                    {
+                        EventSystem.current.SetSelectedGameObject(_selectedMonsterMiddle);
+                    }
+                }
+                if (_selectedMonsterRight != null)
+                {
+                    _selectedMonsterRight.SetActive(true);
+
+                    if (_selectedMonsterLeft == null)
+                    {
+                        EventSystem.current.SetSelectedGameObject(_selectedMonsterMiddle);
+                    }
+                }
+
+                
+            }
+            /*if (Input.GetKeyDown(KeyCode.Return))
+            {
+                for (int i = 0; i < _selectedLimb.Count; i++)
+                {
+                    _selectedLimb[i].SetActive(true);
+                }
+
                 EventSystem.current.SetSelectedGameObject(_selectedLimb[0]);
 
                 if (_monsterLimbsUIActive == false)
@@ -254,28 +345,32 @@ public class BattleManager : MonoBehaviour
                     _monsterLimbsUIActive = true;
                     StartCoroutine(MonsterLimbsUI());
                 }
-            }
+            }*/
         }
         //Show special actions options
         if (EventSystem.current.currentSelectedGameObject == _specialActionsOption)
         {
-            for (int i = 0; i < _selectedLimb.Count; i++)
+            for (int i = 0; i < _selectedLimbMiddleMonster.Count; i++)
             {
-                _selectedLimb[i].SetActive(false);
+                _selectedLimbMiddleMonster[i].SetActive(false);
             }
         }
 
         //Show confirmation option to run
         if (EventSystem.current.currentSelectedGameObject == _runOption)
         {
-            for (int i = 0; i < _selectedLimb.Count; i++)
+            for (int i = 0; i < _selectedLimbMiddleMonster.Count; i++)
             {
-                _selectedLimb[i].SetActive(false);
+                _selectedLimbMiddleMonster[i].SetActive(false);
             }
         }
     }
 
-    private IEnumerator MonsterLimbsUI()
+    private IEnumerator MonsterLimbDisplay()
+    {
+
+    }
+    private IEnumerator SelectedMonsterLimbs()
     {
         yield return new WaitForSeconds(_waitTime);
 
@@ -283,7 +378,7 @@ public class BattleManager : MonoBehaviour
         //GapingHoleMonster Selection
         while (_gapingHoleMonster != null)
         {
-            if (EventSystem.current.currentSelectedGameObject == _selectedLimb[0])
+            if (EventSystem.current.currentSelectedGameObject == _selectedLimbMiddleMonster[0])
             {
                 if (Input.GetKeyDown(KeyCode.Return))
                 {
@@ -305,7 +400,7 @@ public class BattleManager : MonoBehaviour
                     }
                 }
             }
-            else if (EventSystem.current.currentSelectedGameObject == _selectedLimb[1])
+            else if (EventSystem.current.currentSelectedGameObject == _selectedLimbMiddleMonster[1])
             {
                 if (Input.GetKeyDown(KeyCode.Return))
                 {
@@ -327,7 +422,7 @@ public class BattleManager : MonoBehaviour
                     }
                 }
             }
-            else if (EventSystem.current.currentSelectedGameObject == _selectedLimb[2])
+            else if (EventSystem.current.currentSelectedGameObject == _selectedLimbMiddleMonster[2])
             {
                 if (Input.GetKeyDown(KeyCode.Return))
                 {

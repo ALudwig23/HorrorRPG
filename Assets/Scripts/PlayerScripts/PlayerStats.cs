@@ -7,6 +7,7 @@ public class PlayerStats : ScriptableObject
 {
     [SerializeField] private float _maxHealth = 100f;
     [SerializeField] private float _currentHealth = 100f;
+    [SerializeField] private float _baseDefence = 50f;
     [SerializeField] private float _maxSanity = 150f;
     [SerializeField] private float _currentSanity = 150f;
     [SerializeField] private float _damage = 20f;
@@ -19,6 +20,10 @@ public class PlayerStats : ScriptableObject
     {
         get { return _currentHealth; }
         set { _currentHealth = value; }
+    }
+    public float BaseDefence
+    {
+        get { return _baseDefence; }
     }
     public float MaxSanity
     {

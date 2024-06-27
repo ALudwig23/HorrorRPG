@@ -11,11 +11,12 @@ public class GapingHoleMonster : MonoBehaviour
     private float _leftLegHealth = 25f;
     private float _rightLegHealth = 25f;
     private float _headHealth = 50f;
-    private float _damage = 10;
-    private float _sanityDamage = 10;
+    private float _damage = 20f;
+    private float _sanityDamage = 25f;
     private int _movesRandomizer;
     private string _text;
     private bool _finishedDialogue = false;
+    private bool _damageDealt = false;
     private bool _monsterDied = false;
     private bool _leftLegDestroyed = false;
     private bool _rightLegDestroyed = false;
@@ -64,6 +65,11 @@ public class GapingHoleMonster : MonoBehaviour
     {
         get { return _finishedDialogue; }
         set { _finishedDialogue = value; }
+    }
+    public bool DamageDealt
+    {
+        get { return _damageDealt; }
+        set { _damageDealt = value; }
     }
     public bool MonsterDied
     {
@@ -151,6 +157,7 @@ public class GapingHoleMonster : MonoBehaviour
                 Debug.Log("Damaged");
 
                 _text = $"The creature makes a disturbing noise";
+                _damageDealt = true;
                 _dialogueTypingManager.StartDialogue(_text, _dialogueText);
                 yield return new WaitUntil(() => _dialogueTypingManager.ToNextDialogue == true);
                 
@@ -164,10 +171,11 @@ public class GapingHoleMonster : MonoBehaviour
             case 1:
 
                 Debug.Log("Lunge");
-                _playerStats.CurrentHealth -= _damage;
+                _playerStats.CurrentHealth -= _damage * ( 100 / (100 + _playerStats.BaseDefence));
                 Debug.Log("Damaged");
 
                 _text = $"The creature lunges towards you";
+                _damageDealt = true;
                 _dialogueTypingManager.StartDialogue(_text, _dialogueText);
                 yield return new WaitUntil(() => _dialogueTypingManager.ToNextDialogue == true);
                 
