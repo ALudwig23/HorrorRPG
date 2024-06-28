@@ -115,7 +115,7 @@ public class BattleManager : MonoBehaviour
     {
         if (_playerStats.CurrentSanity <= _playerStats.MaxSanity / 4)
         {
-
+            _playerStats.CurrentHealth -= 5f;
         }
     }
 
@@ -203,6 +203,7 @@ public class BattleManager : MonoBehaviour
 
                 //=================================================================================================
                 //Enemy Selection Button
+                //Middle Enemy Select
                 _selectedMonsterMiddle = new GameObject("MiddleMonsterSelect");
                 _selectedMonsterMiddle.transform.SetParent(_canvas.transform, false);
 
@@ -236,6 +237,39 @@ public class BattleManager : MonoBehaviour
                 middleSelectButtonNavigation.mode = Navigation.Mode.Explicit;
                 middleSelectButton.navigation = middleSelectButtonNavigation;
 
+                //Right Enemy Select
+                _selectedMonsterRight = new GameObject("MiddleMonsterSelect");
+                _selectedMonsterRight.transform.SetParent(_canvas.transform, false);
+
+                RectTransform rightSelectRect = _selectedMonsterMiddle.AddComponent<RectTransform>();
+                rightSelectRect.anchoredPosition = new Vector2(60f, -145.5f);
+                rightSelectRect.sizeDelta = new Vector2(115f, 147f);
+
+                Button middleSelectButton = _selectedMonsterMiddle.AddComponent<Button>();
+                Image middleSelectSprite = _selectedMonsterMiddle.AddComponent<Image>();
+                middleSelectSprite.sprite = _buttonSprite;
+
+                middleSelectButton.targetGraphic = middleSelectSprite;
+                middleSelectButton.transition = Selectable.Transition.ColorTint;
+                middleSelectButton.colors = selectedColour;
+
+                GameObject middleSelectChild = new GameObject("MiddleSelectChild");
+                middleSelectChild.transform.SetParent(_selectedMonsterMiddle.transform);
+
+                TMP_Text middleSelectText = middleSelectChild.AddComponent<TextMeshProUGUI>();
+                middleSelectText.text = "Middle";
+                middleSelectText.fontSize = 24f;
+                middleSelectText.color = Color.black;
+                middleSelectText.alignment = TextAlignmentOptions.Center;
+
+                RectTransform middleSelectTextRect = middleSelectText.GetComponent<RectTransform>();
+                middleSelectTextRect.position = middleSelectRect.position;
+                middleSelectTextRect.sizeDelta = middleSelectRect.sizeDelta;
+                middleSelectTextRect.localScale = middleSelectRect.localScale;
+
+                Navigation middleSelectButtonNavigation = middleSelectButton.navigation;
+                middleSelectButtonNavigation.mode = Navigation.Mode.Explicit;
+                middleSelectButton.navigation = middleSelectButtonNavigation;
                 if (_selectedLimbLeftMonster != null)
                 {
 
