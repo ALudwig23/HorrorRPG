@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using UnityEngine.TextCore.Text;
 
 public class GapingHoleMonster : MonoBehaviour
 {
@@ -26,9 +27,12 @@ public class GapingHoleMonster : MonoBehaviour
     [SerializeField] private GameObject _rightLimbSelection;
     [SerializeField] private GameObject _headLimbSelection;
     [SerializeField] private GameObject _dialogueBox;
+
+    [SerializeField] private TMP_FontAsset _fontAsset;
     [SerializeField] private Sprite _buttonSprite;
     [SerializeField] private TMP_Text _dialogueText;
     [SerializeField] private Canvas _canvas;
+
     [SerializeField] private Coroutine _dialogueCoroutine;
     [SerializeField] private PlayerStats _playerStats;
     [SerializeField] private DialogueTypingManager _dialogueTypingManager;
@@ -316,6 +320,7 @@ public class GapingHoleMonster : MonoBehaviour
         TMP_Text headText = headChild.AddComponent<TextMeshProUGUI>();
         headText.text = "Head";
         headText.fontSize = 24f;
+        headText.font = _fontAsset;
         headText.color = Color.black;
         headText.alignment = TextAlignmentOptions.Center;
 

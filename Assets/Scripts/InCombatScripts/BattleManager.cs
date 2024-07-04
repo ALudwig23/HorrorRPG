@@ -5,11 +5,12 @@ using Unity.VisualScripting;
 using UnityEditor.Search;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.TextCore.Text;
 using UnityEngine.UI;
 
 public class BattleManager : MonoBehaviour
 {
-    private enum BattleState { PlayerTurn, MonsterTurn, BattleEnd}
+    private enum BattleState { PlayerTurn, MonsterTurn, BattleEnd }
     [SerializeField] private BattleState _battleState;
 
     private float _miniTimer = 1f;
@@ -29,6 +30,7 @@ public class BattleManager : MonoBehaviour
         get { return _battleWon; }
     }
 
+    [SerializeField] private TMP_FontAsset _fontAsset;
     [SerializeField] private Sprite _buttonSprite;
     [SerializeField] private Canvas _canvas;
     [SerializeField] private GameObject _previousSelection;
@@ -124,8 +126,7 @@ public class BattleManager : MonoBehaviour
         _enemyCount = Random.Range(1, 4);
         _middleMonster = _gameManager.CollidedMonsterType;
 
-        ColorBlock selectedColour = new ColorBlock();
-        selectedColour.selectedColor = Color.red;
+        ColorBlock buttonSelectedColour;
 
         switch (_middleMonster)
         {
@@ -157,9 +158,12 @@ public class BattleManager : MonoBehaviour
                 Button leftLegButton = _selectedLimbMiddleMonster[0].GetComponent<Button>();
                 Image leftLegButtonImage = _selectedLimbMiddleMonster[0].GetComponent<Image>();
 
+                buttonSelectedColour = leftLegButton.colors;
+                buttonSelectedColour.selectedColor = Color.red;
+
                 leftLegButton.targetGraphic = leftLegButtonImage;
                 leftLegButton.transition = Selectable.Transition.ColorTint;
-                leftLegButton.colors = selectedColour;
+                leftLegButton.colors = buttonSelectedColour;
 
                 //Right Leg Button
                 Button rightLegButton = _selectedLimbMiddleMonster[1].GetComponent<Button>();
@@ -167,7 +171,7 @@ public class BattleManager : MonoBehaviour
 
                 rightLegButton.targetGraphic = rightLegButtonImage;
                 rightLegButton.transition = Selectable.Transition.ColorTint;
-                rightLegButton.colors = selectedColour;
+                rightLegButton.colors = buttonSelectedColour;
 
                 //Head Button
                 Button headButton = _selectedLimbMiddleMonster[2].GetComponent<Button>();
@@ -175,7 +179,7 @@ public class BattleManager : MonoBehaviour
 
                 headButton.targetGraphic = headButtonImage;
                 headButton.transition = Selectable.Transition.ColorTint;
-                headButton.colors = selectedColour;
+                headButton.colors = buttonSelectedColour;
 
                 //Options navigation configuration
                 Navigation leftLegButtonNavigation = leftLegButton.navigation;
@@ -224,9 +228,12 @@ public class BattleManager : MonoBehaviour
         Image middleSelectSprite = _selectedMonsterMiddle.AddComponent<Image>();
         middleSelectSprite.sprite = _buttonSprite;
 
+        buttonSelectedColour = middleSelectButton.colors;
+        buttonSelectedColour.selectedColor = Color.red;
+
         middleSelectButton.targetGraphic = middleSelectSprite;
         middleSelectButton.transition = Selectable.Transition.ColorTint;
-        middleSelectButton.colors = selectedColour;
+        middleSelectButton.colors = buttonSelectedColour;
 
         GameObject middleSelectChild = new GameObject("MiddleSelectChild");
         middleSelectChild.transform.SetParent(_selectedMonsterMiddle.transform);
@@ -234,6 +241,7 @@ public class BattleManager : MonoBehaviour
         TMP_Text middleSelectText = middleSelectChild.AddComponent<TextMeshProUGUI>();
         middleSelectText.text = "Middle";
         middleSelectText.fontSize = 24f;
+        middleSelectText.font = _fontAsset;
         middleSelectText.color = Color.black;
         middleSelectText.alignment = TextAlignmentOptions.Center;
 
@@ -452,6 +460,13 @@ public class BattleManager : MonoBehaviour
                         _selectedMonsterRight.SetActive(false);
                     }
 
+                    for (int i = 0; i < _selectedLimbLeftMonster.Count; i++)
+                    {
+                        _selectedLimbLeftMonster[i].SetActive(true);
+                    }
+
+                    EventSystem.current.SetSelectedGameObject(_selectedLimbLeftMonster[0]);
+
                     if (_monsterLimbsSelected == false)
                     {
                         Debug.Log("ActiveUI");
@@ -481,6 +496,13 @@ public class BattleManager : MonoBehaviour
                     {
                         _selectedMonsterRight.SetActive(false);
                     }
+
+                    for (int i = 0; i < _selectedLimbMiddleMonster.Count; i++)
+                    {
+                        _selectedLimbMiddleMonster[i].SetActive(true);
+                    }
+
+                    EventSystem.current.SetSelectedGameObject(_selectedLimbMiddleMonster[0]);
 
                     if (_monsterLimbsSelected == false)
                     {
@@ -512,6 +534,13 @@ public class BattleManager : MonoBehaviour
                         _selectedMonsterRight.SetActive(false);
                     }
 
+                    for (int i = 0; i < _selectedLimbRightMonster.Count; i++)
+                    {
+                        _selectedLimbRightMonster[i].SetActive(true);
+                    }
+
+                    EventSystem.current.SetSelectedGameObject(_selectedLimbRightMonster[0]);
+
                     if (_monsterLimbsSelected == false)
                     {
                         Debug.Log("ActiveUI");
@@ -542,13 +571,6 @@ public class BattleManager : MonoBehaviour
 
         while (_selectedMonsterLeft != null)
         {
-            for (int i = 0; i < _selectedLimbLeftMonster.Count; i++)
-            {
-                _selectedLimbLeftMonster[i].SetActive(true);
-            }
-
-            EventSystem.current.SetSelectedGameObject(_selectedLimbLeftMonster[0]);
-
             switch (_leftMonster)
             {
                 case "":
@@ -566,13 +588,6 @@ public class BattleManager : MonoBehaviour
 
         while (_selectedMonsterMiddle != null)
         {
-            for (int i = 0; i < _selectedLimbMiddleMonster.Count; i++)
-            {
-                _selectedLimbMiddleMonster[i].SetActive(true);
-            }
-
-            EventSystem.current.SetSelectedGameObject(_selectedLimbMiddleMonster[0]);
-
             switch (_middleMonster)
             {
                 case "GapingHoleMonster":
@@ -648,8 +663,14 @@ public class BattleManager : MonoBehaviour
 
                     if (Input.GetKeyDown(KeyCode.Backspace))
                     {
+                        for (int i = 0; i < _selectedLimbMiddleMonster.Count; i++)
+                        {
+                            _selectedLimbMiddleMonster[i].SetActive(false);
+                        }
+
                         EventSystem.current.SetSelectedGameObject(_previousSelection);
                         _monsterLimbsSelected = false;
+                        StartCoroutine(SelectedMonster());
                     }
 
                     break;
@@ -657,13 +678,6 @@ public class BattleManager : MonoBehaviour
 
             while (_selectedMonsterRight != null)
             {
-                for (int i = 0; i < _selectedLimbRightMonster.Count; i++)
-                {
-                    _selectedLimbRightMonster[i].SetActive(true);
-                }
-
-                EventSystem.current.SetSelectedGameObject(_selectedLimbRightMonster[0]);
-
                 switch (_rightMonster)
                 {
                     case "":
