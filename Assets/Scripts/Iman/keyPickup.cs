@@ -1,11 +1,22 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class KeyPickup : MonoBehaviour
 {
+    public GameObject pickupTextUI;  // Assign the Text UI element here
+
     private bool isPlayerInRange = false;
     private Key playerKeyHolder;
+
+    void Start()
+    {
+        if (pickupTextUI != null)
+        {
+            pickupTextUI.SetActive(false);
+        }
+    }
 
     void Update()
     {
@@ -15,6 +26,11 @@ public class KeyPickup : MonoBehaviour
             {
                 playerKeyHolder.hasKey = true;
                 Destroy(gameObject);
+
+                if (pickupTextUI != null)
+                {
+                    pickupTextUI.SetActive(false);
+                }
             }
         }
     }
@@ -25,6 +41,11 @@ public class KeyPickup : MonoBehaviour
         {
             isPlayerInRange = true;
             playerKeyHolder = other.GetComponent<Key>();
+
+            if (pickupTextUI != null)
+            {
+                pickupTextUI.SetActive(true);
+            }
         }
     }
 
@@ -34,6 +55,11 @@ public class KeyPickup : MonoBehaviour
         {
             isPlayerInRange = false;
             playerKeyHolder = null;
+
+            if (pickupTextUI != null)
+            {
+                pickupTextUI.SetActive(false);
+            }
         }
     }
 }
