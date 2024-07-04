@@ -15,8 +15,6 @@ public class GameManager : MonoBehaviour
         get { return _collidedMonsterType; }
     }
 
-    [SerializeField] private Camera _playerCamera;
-
     //Scripts reference
     [SerializeField] private CheckPlayerCollision _checkPlayerCollision;
     [SerializeField] private TeleportTrigger _teleportTrigger;
@@ -53,7 +51,6 @@ public class GameManager : MonoBehaviour
 
     private void FixedUpdate()
     {
-        //CameraManager();
         InGameScenesManager();
     }
 
@@ -77,25 +74,6 @@ public class GameManager : MonoBehaviour
         Application.Quit();
     }
 
-    /*private void CameraManager()
-    {
-        //Only run when not in battle or main menu
-        if (Instance._currentRoomScene < 2)
-            return;
-
-        if (_playerCamera == null)
-            return;
-
-        //Find Camera and add Player Camera script
-        _playerCamera = FindObjectOfType<Camera>();
-
-        if (_playerCamera.GetComponent<PlayerCamera>() == null)
-        {
-            _playerCamera.AddComponent<PlayerCamera>();
-        }
-    }*/
-
-    //Manager for in game scenes
     private void InGameScenesManager()
     {
         //Check if player collided with enemy

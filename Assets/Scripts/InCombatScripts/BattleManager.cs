@@ -65,6 +65,7 @@ public class BattleManager : MonoBehaviour
     //Monster Types
     private GameObject _monsterPrefab;
     [SerializeField] private GapingHoleMonster _gapingHoleMonster;
+    [SerializeField] private SpiderMonster _spiderMonster;
 
     [SerializeField] private PlayerStats _playerStats;
     [SerializeField] private DialogueTypingManager _dialogueTypingManager;
@@ -88,16 +89,7 @@ public class BattleManager : MonoBehaviour
 
     void Update()
     {
-        SelectionUI();
-        if (Input.GetKeyDown(KeyCode.Backspace) && _miniTimer == 1f)
-        {
-            EventSystem.current.SetSelectedGameObject(_previousSelection);
-            StartTimer();
-        }
-        if (_miniTimer <= 0f)
-        {
-            _miniTimer = 1f;
-        }
+        OptionSelection();
     }
 
     private void FixedUpdate()
@@ -132,6 +124,9 @@ public class BattleManager : MonoBehaviour
         _enemyCount = Random.Range(1, 4);
         _middleMonster = _gameManager.CollidedMonsterType;
 
+        ColorBlock selectedColour = new ColorBlock();
+        selectedColour.selectedColor = Color.red;
+
         switch (_middleMonster)
         {
             case "GapingHoleMonster":
@@ -161,11 +156,9 @@ public class BattleManager : MonoBehaviour
                 //Left Leg button
                 Button leftLegButton = _selectedLimbMiddleMonster[0].GetComponent<Button>();
                 Image leftLegButtonImage = _selectedLimbMiddleMonster[0].GetComponent<Image>();
-                ColorBlock selectedColour = leftLegButton.colors; //Main colour for selection
 
                 leftLegButton.targetGraphic = leftLegButtonImage;
                 leftLegButton.transition = Selectable.Transition.ColorTint;
-                selectedColour.selectedColor = Color.red;
                 leftLegButton.colors = selectedColour;
 
                 //Right Leg Button
@@ -201,89 +194,57 @@ public class BattleManager : MonoBehaviour
                 headButtonNavigation.selectOnLeft = rightLegButton;
                 headButton.navigation = headButtonNavigation;
 
-                //=================================================================================================
-                //Enemy Selection Button
-                //Middle Enemy Select
-                _selectedMonsterMiddle = new GameObject("MiddleMonsterSelect");
-                _selectedMonsterMiddle.transform.SetParent(_canvas.transform, false);
-
-                RectTransform middleSelectRect = _selectedMonsterMiddle.AddComponent<RectTransform>();
-                middleSelectRect.anchoredPosition = new Vector2(60f, -145.5f);
-                middleSelectRect.sizeDelta = new Vector2(115f, 147f);
-
-                Button middleSelectButton = _selectedMonsterMiddle.AddComponent<Button>();
-                Image middleSelectSprite = _selectedMonsterMiddle.AddComponent<Image>();
-                middleSelectSprite.sprite = _buttonSprite;
-
-                middleSelectButton.targetGraphic = middleSelectSprite;
-                middleSelectButton.transition = Selectable.Transition.ColorTint;
-                middleSelectButton.colors = selectedColour;
-
-                GameObject middleSelectChild = new GameObject("MiddleSelectChild");
-                middleSelectChild.transform.SetParent(_selectedMonsterMiddle.transform);
-
-                TMP_Text middleSelectText = middleSelectChild.AddComponent<TextMeshProUGUI>();
-                middleSelectText.text = "Middle";
-                middleSelectText.fontSize = 24f;
-                middleSelectText.color = Color.black;
-                middleSelectText.alignment = TextAlignmentOptions.Center;
-
-                RectTransform middleSelectTextRect = middleSelectText.GetComponent<RectTransform>();
-                middleSelectTextRect.position = middleSelectRect.position;
-                middleSelectTextRect.sizeDelta = middleSelectRect.sizeDelta;
-                middleSelectTextRect.localScale = middleSelectRect.localScale;
-
-                Navigation middleSelectButtonNavigation= middleSelectButton.navigation;
-                middleSelectButtonNavigation.mode = Navigation.Mode.Explicit;
-                middleSelectButton.navigation = middleSelectButtonNavigation;
-
-                //Right Enemy Select
-                _selectedMonsterRight = new GameObject("MiddleMonsterSelect");
-                _selectedMonsterRight.transform.SetParent(_canvas.transform, false);
-
-                RectTransform rightSelectRect = _selectedMonsterMiddle.AddComponent<RectTransform>();
-                rightSelectRect.anchoredPosition = new Vector2(60f, -145.5f);
-                rightSelectRect.sizeDelta = new Vector2(115f, 147f);
-
-                Button middleSelectButton = _selectedMonsterMiddle.AddComponent<Button>();
-                Image middleSelectSprite = _selectedMonsterMiddle.AddComponent<Image>();
-                middleSelectSprite.sprite = _buttonSprite;
-
-                middleSelectButton.targetGraphic = middleSelectSprite;
-                middleSelectButton.transition = Selectable.Transition.ColorTint;
-                middleSelectButton.colors = selectedColour;
-
-                GameObject middleSelectChild = new GameObject("MiddleSelectChild");
-                middleSelectChild.transform.SetParent(_selectedMonsterMiddle.transform);
-
-                TMP_Text middleSelectText = middleSelectChild.AddComponent<TextMeshProUGUI>();
-                middleSelectText.text = "Middle";
-                middleSelectText.fontSize = 24f;
-                middleSelectText.color = Color.black;
-                middleSelectText.alignment = TextAlignmentOptions.Center;
-
-                RectTransform middleSelectTextRect = middleSelectText.GetComponent<RectTransform>();
-                middleSelectTextRect.position = middleSelectRect.position;
-                middleSelectTextRect.sizeDelta = middleSelectRect.sizeDelta;
-                middleSelectTextRect.localScale = middleSelectRect.localScale;
-
-                Navigation middleSelectButtonNavigation = middleSelectButton.navigation;
-                middleSelectButtonNavigation.mode = Navigation.Mode.Explicit;
-                middleSelectButton.navigation = middleSelectButtonNavigation;
-                if (_selectedLimbLeftMonster != null)
-                {
-
-                }
-                //onMonsterMiddle.selectOnLeft = 
-
-                Debug.Log("Encountered Monster With a Gaping Hole");
                 break;
 
-            case "":
+            case "SpiderMonster":
 
+                _monsterPrefab = Resources.Load<GameObject>("SpiderMonster");
+
+                GameObject spiderMonster = Instantiate(_monsterPrefab);
+                spiderMonster.transform.SetParent(_spawnPositionMid.transform);
+
+                _spiderMonster = FindObjectOfType<SpiderMonster>();
+                yield return new WaitForSeconds(0.1f);
+
+                _spiderMonster.CreateLimbTarget();
 
                 break;
         }
+
+        //Enemy Selection Button
+        //Middle Enemy Select
+        _selectedMonsterMiddle = new GameObject("MiddleMonsterSelect");
+        _selectedMonsterMiddle.transform.SetParent(_canvas.transform, false);
+
+        RectTransform middleSelectRect = _selectedMonsterMiddle.AddComponent<RectTransform>();
+        middleSelectRect.anchoredPosition = new Vector2(60f, -145.5f);
+        middleSelectRect.sizeDelta = new Vector2(115f, 147f);
+
+        Button middleSelectButton = _selectedMonsterMiddle.AddComponent<Button>();
+        Image middleSelectSprite = _selectedMonsterMiddle.AddComponent<Image>();
+        middleSelectSprite.sprite = _buttonSprite;
+
+        middleSelectButton.targetGraphic = middleSelectSprite;
+        middleSelectButton.transition = Selectable.Transition.ColorTint;
+        middleSelectButton.colors = selectedColour;
+
+        GameObject middleSelectChild = new GameObject("MiddleSelectChild");
+        middleSelectChild.transform.SetParent(_selectedMonsterMiddle.transform);
+
+        TMP_Text middleSelectText = middleSelectChild.AddComponent<TextMeshProUGUI>();
+        middleSelectText.text = "Middle";
+        middleSelectText.fontSize = 24f;
+        middleSelectText.color = Color.black;
+        middleSelectText.alignment = TextAlignmentOptions.Center;
+
+        RectTransform middleSelectTextRect = middleSelectText.GetComponent<RectTransform>();
+        middleSelectTextRect.position = middleSelectRect.position;
+        middleSelectTextRect.sizeDelta = middleSelectRect.sizeDelta;
+        middleSelectTextRect.localScale = middleSelectRect.localScale;
+
+        Navigation middleSelectButtonNavigation = middleSelectButton.navigation;
+        middleSelectButtonNavigation.mode = Navigation.Mode.Explicit;
+        middleSelectButton.navigation = middleSelectButtonNavigation;
     }
 
     private IEnumerator HandleState()
@@ -377,7 +338,7 @@ public class BattleManager : MonoBehaviour
         }
     }
 
-    private void SelectionUI()
+    private void OptionSelection()
     {
         //Show fight options
         if (_battleState == BattleState.PlayerTurn && EventSystem.current.currentSelectedGameObject == _fightOption)
@@ -397,31 +358,21 @@ public class BattleManager : MonoBehaviour
 
             if (Input.GetKeyDown(KeyCode.Return))
             {
-                _previousSelection = EventSystem.current.currentSelectedGameObject;
 
                 if (_selectedMonsterLeft != null)
                 {
-                    _selectedMonsterLeft.SetActive(true);
                     EventSystem.current.SetSelectedGameObject(_selectedMonsterLeft);
                 }
                 else
                 {
                     EventSystem.current.SetSelectedGameObject(_selectedMonsterMiddle);
                 }
-                if (_selectedMonsterMiddle != null)
-                {
-                    _selectedMonsterMiddle.SetActive(true);
-                }
-                if (_selectedMonsterRight != null)
-                {
-                    _selectedMonsterRight.SetActive(true);
-                }
 
                 if (_monsterLimbsDisplay == false)
                 {
                     Debug.Log("ActiveUI");
                     _monsterLimbsDisplay = true;
-                    StartCoroutine(MonsterLimbDisplay());
+                    StartCoroutine(SelectedMonster());
                 }
                 
             }
@@ -461,9 +412,24 @@ public class BattleManager : MonoBehaviour
         }
     }
 
-    private IEnumerator MonsterLimbDisplay()
+    //Select monster to attack
+    private IEnumerator SelectedMonster()
     {
         yield return new WaitForSeconds(_waitTime);
+
+        //Reactivate the selections when returning from later selection
+        if (_selectedMonsterLeft != null)
+        {
+            _selectedMonsterLeft.SetActive(true);
+        }
+        if (_selectedMonsterMiddle != null)
+        {
+            _selectedMonsterMiddle.SetActive(true);
+        }
+        if (_selectedMonsterRight != null)
+        {
+            _selectedMonsterRight.SetActive(true);
+        }
 
         while (EventSystem.current.currentSelectedGameObject == _selectedMonsterLeft || EventSystem.current.currentSelectedGameObject == _selectedMonsterMiddle || EventSystem.current.currentSelectedGameObject == _selectedMonsterRight)
         {
@@ -486,13 +452,6 @@ public class BattleManager : MonoBehaviour
                         _selectedMonsterRight.SetActive(false);
                     }
 
-                    for (int i = 0; i < _selectedLimbLeftMonster.Count; i++)
-                    {
-                        _selectedLimbLeftMonster[i].SetActive(true);
-                    }
-
-                    EventSystem.current.SetSelectedGameObject(_selectedLimbLeftMonster[0]);
-
                     if (_monsterLimbsSelected == false)
                     {
                         Debug.Log("ActiveUI");
@@ -509,8 +468,7 @@ public class BattleManager : MonoBehaviour
                 if (Input.GetKeyDown(KeyCode.Return))
                 {
                     _previousSelection = EventSystem.current.currentSelectedGameObject;
-
-                    Debug.Log("Selected Middle");
+;
                     if (_selectedMonsterLeft != null)
                     {
                         _selectedMonsterLeft.SetActive(false);
@@ -523,13 +481,6 @@ public class BattleManager : MonoBehaviour
                     {
                         _selectedMonsterRight.SetActive(false);
                     }
-
-                    for (int i = 0; i < _selectedLimbMiddleMonster.Count; i++)
-                    {
-                        _selectedLimbMiddleMonster[i].SetActive(true);
-                    }
-
-                    EventSystem.current.SetSelectedGameObject(_selectedLimbMiddleMonster[0]);
 
                     if (_monsterLimbsSelected == false)
                     {
@@ -561,13 +512,6 @@ public class BattleManager : MonoBehaviour
                         _selectedMonsterRight.SetActive(false);
                     }
 
-                    for (int i = 0; i < _selectedLimbRightMonster.Count; i++)
-                    {
-                        _selectedLimbRightMonster[i].SetActive(true);
-                    }
-
-                    EventSystem.current.SetSelectedGameObject(_selectedLimbRightMonster[0]);
-
                     if (_monsterLimbsSelected == false)
                     {
                         Debug.Log("ActiveUI");
@@ -578,6 +522,13 @@ public class BattleManager : MonoBehaviour
                     _monsterLimbsDisplay = false;
                 }
             }
+
+            if (Input.GetKeyDown(KeyCode.Backspace))
+            {
+                EventSystem.current.SetSelectedGameObject(_fightOption);
+                _monsterLimbsDisplay = false;
+            }
+
             yield return null;
         }
 
@@ -591,14 +542,37 @@ public class BattleManager : MonoBehaviour
 
         while (_selectedMonsterLeft != null)
         {
+            for (int i = 0; i < _selectedLimbLeftMonster.Count; i++)
+            {
+                _selectedLimbLeftMonster[i].SetActive(true);
+            }
+
+            EventSystem.current.SetSelectedGameObject(_selectedLimbLeftMonster[0]);
+
             switch (_leftMonster)
             {
-
+                case "":
+                    break;
             }
+
+            if (Input.GetKeyDown(KeyCode.Backspace))
+            {
+                EventSystem.current.SetSelectedGameObject(_previousSelection);
+                _monsterLimbsSelected = false;
+            }
+
+            yield return null;
         }
 
         while (_selectedMonsterMiddle != null)
         {
+            for (int i = 0; i < _selectedLimbMiddleMonster.Count; i++)
+            {
+                _selectedLimbMiddleMonster[i].SetActive(true);
+            }
+
+            EventSystem.current.SetSelectedGameObject(_selectedLimbMiddleMonster[0]);
+
             switch (_middleMonster)
             {
                 case "GapingHoleMonster":
@@ -671,14 +645,35 @@ public class BattleManager : MonoBehaviour
                             }
                         }
                     }
+
+                    if (Input.GetKeyDown(KeyCode.Backspace))
+                    {
+                        EventSystem.current.SetSelectedGameObject(_previousSelection);
+                        _monsterLimbsSelected = false;
+                    }
+
                     break;
             }
 
             while (_selectedMonsterRight != null)
             {
+                for (int i = 0; i < _selectedLimbRightMonster.Count; i++)
+                {
+                    _selectedLimbRightMonster[i].SetActive(true);
+                }
+
+                EventSystem.current.SetSelectedGameObject(_selectedLimbRightMonster[0]);
+
                 switch (_rightMonster)
                 {
+                    case "":
+                        break;
+                }
 
+                if (Input.GetKeyDown(KeyCode.Backspace))
+                {
+                    EventSystem.current.SetSelectedGameObject(_previousSelection);
+                    _monsterLimbsSelected = false;
                 }
             }
 

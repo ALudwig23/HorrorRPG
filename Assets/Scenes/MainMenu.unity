@@ -324,8 +324,8 @@ MonoBehaviour:
   m_ShadowVolumeIntensityEnabled: 0
   m_ShadowVolumeIntensity: 0.75
   m_LocalBounds:
-    m_Center: {x: -0.113600016, y: 3.9850998, z: 0}
-    m_Extent: {x: 6.6956997, y: 5.9653997, z: 0}
+    m_Center: {x: -0.11319995, y: 3.9841998, z: 0}
+    m_Extent: {x: 6.6965, y: 5.9656, z: 0}
   m_PointLightInnerAngle: 38.11
   m_PointLightOuterAngle: 99.28
   m_PointLightInnerRadius: 3.1570146
@@ -982,6 +982,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _playerCamera: {fileID: 0}
   _checkPlayerCollision: {fileID: 0}
+  _teleportTrigger: {fileID: 0}
   _playerMovement: {fileID: 0}
   _battleManager: {fileID: 0}
 --- !u!1 &1968029540
