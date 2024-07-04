@@ -1,41 +1,47 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.SceneManagement;
 
 public class EnemyMovement : MonoBehaviour
 {
-    [SerializeField] private Transform player; // The chasing target
-    [SerializeField] private float chaseRadius = 5.0f; // Radius within which the enemy starts chasing
-    [SerializeField] private float moveSpeed = 2.0f; // Enemy's speed
+    public Transform player; // The chasing target
+    public float normalChaseRadius = 5.0f; // Radius within which the enemy starts chasing
+    public float torchChaseRadius = 10.0f; // Chase radius when player is holding torchlight
+    public float moveSpeed = 2.0f; // Enemy's speed
 
-    [SerializeField] private bool isChasing = false; // is it still chasing?
+    private bool isChasing = false; // is it still chasing?
 
-    private void Start()
+    void Start()
     {
         player = GameObject.FindWithTag("Player").transform;
     }
 
-    void Update() // what it will be doing if it is chasing and not chasing
+    void Update()
     {
-        float distanceToPlayer = Vector3.Distance(transform.position, player.position);
+        if (player != null)
+        {
+            // Determine current chase radius based on torchlight state
+            float chaseRadius = TorchlightState.instance.GetTorchlightState() ? torchChaseRadius : normalChaseRadius;
 
-        if (distanceToPlayer <= chaseRadius)
-        {
-            isChasing = true;
-        }
-        else
-        {
-            isChasing = false;
-        }
-
-        if (isChasing)
-        {
-            ChasePlayer();
+            // Set destination to player's position if within chase radius
+            float distanceToPlayer = Vector3.Distance(transform.position, player.position);
+            if (distanceToPlayer <= chaseRadius)
+            {
+                isChasing = true;
+                ChasePlayer();
+            }
+            else
+            {
+                isChasing = false;
+                // Optionally, you can add behavior for when the enemy is not chasing
+            }
         }
     }
 
-    void ChasePlayer() //script that chases the player
+    void ChasePlayer()
     {
         Vector3 direction = (player.position - transform.position).normalized;
         transform.position += direction * moveSpeed * Time.deltaTime;
@@ -45,17 +51,10 @@ public class EnemyMovement : MonoBehaviour
     {
         // chase radius in the scene view for visualization
         Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, chaseRadius);
-    }
+        Gizmos.DrawWireSphere(transform.position, normalChaseRadius);
 
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        if (collision.gameObject.tag == "Player")
-        {
-            //Destroy(collision.gameObject); to destroy player
-            //SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-        }
-
-
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(transform.position, torchChaseRadius);
     }
 }
+
