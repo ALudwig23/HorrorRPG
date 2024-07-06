@@ -1,0 +1,7 @@
+Implemented level system with turn-based combat during enemy encounter.
+Can select body part of a monster to attack and can be destroyed after enough hits
+dealing bonus damage.
+
+Only fight options works currently, the other 2 options have yet to be implemented.
+No option to back out after selecting "fight" option.
+No UI display for hp yet, enemy should die in around 5 hits.

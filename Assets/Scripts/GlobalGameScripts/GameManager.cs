@@ -6,8 +6,8 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-    private int _currentRoomScene = 1;
-    private int _combatScene = 0;
+    private int _currentRoomScene = 2;
+    private int _combatScene = 1;
     private string _collidedMonsterType;
 
     public string CollidedMonsterType
