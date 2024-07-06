@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-    private int _currentRoomScene = 2;
+    private int _currentRoomScene = 0;
     private int _combatScene = 1;
     private string _collidedMonsterType;
 
@@ -57,8 +57,8 @@ public class GameManager : MonoBehaviour
     //Function for starting the game (used for start button)
     public void StartGame()
     {
-        //Check if m_Instance is null or not on Scene 1 (Main Menu)
-        if (Instance == null || Instance._currentRoomScene != 1)
+        //Check if m_Instance is null or not on Scene 0 (Main Menu)
+        if (Instance == null || Instance._currentRoomScene != 0)
             return;
 
         Instance._currentRoomScene = 2;
