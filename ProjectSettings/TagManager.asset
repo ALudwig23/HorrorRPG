@@ -4,8 +4,10 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - Monster1
   - GapingHoleMonster
+  - AttackPointer
+  - AttackPointerCenter
+  - InGameMenu
   - Key
   layers:
   - Default
@@ -53,7 +55,7 @@ TagManager:
   - name: Teleporters
     uniqueID: 1109509025
     locked: 0
-  - name: Player
+  - name: Player & Monster
     uniqueID: 3679741025
     locked: 0
   - name: Objects (front)

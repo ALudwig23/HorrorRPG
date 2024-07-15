@@ -6,8 +6,9 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-    private int _currentRoomScene = 1;
-    private int _combatScene = 0;
+    private int _currentRoomScene = 0;
+    private int _combatScene = 1;
+    private float _waitTime = 0.5f;
     private string _collidedMonsterType;
 
     public string CollidedMonsterType
@@ -15,13 +16,16 @@ public class GameManager : MonoBehaviour
         get { return _collidedMonsterType; }
     }
 
-    [SerializeField] private Camera _playerCamera;
+    [SerializeField] private Canvas _canvas;
+    [SerializeField] private GameObject _inGameMenu;
 
     //Scripts reference
     [SerializeField] private CheckPlayerCollision _checkPlayerCollision;
     [SerializeField] private TeleportTrigger _teleportTrigger;
     [SerializeField] private PlayerMovement _playerMovement;
     [SerializeField] private BattleManager _battleManager;
+    [SerializeField] private PlayerStats _playerStats;
+    [SerializeField] private HandleInGameMenu _handleInGameMenu;
 
     private static GameManager _instance = null;
     public static GameManager Instance
@@ -49,19 +53,29 @@ public class GameManager : MonoBehaviour
     private void Update()
     {
         CollisionHandler();
+
+        if (_waitTime >= 0f)
+        {
+            _waitTime -= Time.deltaTime;
+        }
+
+        if (Input.GetKeyDown(KeyCode.I) && _waitTime <= 0f)
+        {
+            HandleInGameMenu();
+            _waitTime = 1f;
+        }
     }
 
     private void FixedUpdate()
     {
-        //CameraManager();
         InGameScenesManager();
     }
 
     //Function for starting the game (used for start button)
     public void StartGame()
     {
-        //Check if m_Instance is null or not on Scene 1 (Main Menu)
-        if (Instance == null || Instance._currentRoomScene != 1)
+        //Check if m_Instance is null or not on Scene 0 (Main Menu)
+        if (Instance == null || Instance._currentRoomScene != 0)
             return;
 
         Instance._currentRoomScene = 2;
@@ -77,25 +91,6 @@ public class GameManager : MonoBehaviour
         Application.Quit();
     }
 
-    /*private void CameraManager()
-    {
-        //Only run when not in battle or main menu
-        if (Instance._currentRoomScene < 2)
-            return;
-
-        if (_playerCamera == null)
-            return;
-
-        //Find Camera and add Player Camera script
-        _playerCamera = FindObjectOfType<Camera>();
-
-        if (_playerCamera.GetComponent<PlayerCamera>() == null)
-        {
-            _playerCamera.AddComponent<PlayerCamera>();
-        }
-    }*/
-
-    //Manager for in game scenes
     private void InGameScenesManager()
     {
         //Check if player collided with enemy
@@ -146,4 +141,39 @@ public class GameManager : MonoBehaviour
             Instance._currentRoomScene = _teleportTrigger.LoadScene;
         }
     } 
+
+    public void HandleInGameMenu()
+    { 
+        if (_handleInGameMenu == null)
+        {
+            _handleInGameMenu = new HandleInGameMenu();
+        }
+        if (_handleInGameMenu == null)
+            return;
+
+        if (_canvas == null)
+        {
+            _canvas = FindObjectOfType<Canvas>();
+
+            Transform inGameMenuTransform = _canvas.transform.Find("InGameMenu");
+            _inGameMenu = inGameMenuTransform.gameObject;
+        }
+        if (_inGameMenu == null)
+            return;
+
+        Debug.Log("works");
+
+        _handleInGameMenu.OpenOrCloseInGameMenu(_inGameMenu);
+    }
+
+    public void SaveGameState()
+    {
+        SaveData.SavePlayerStats(_playerStats);
+
+    }
+
+    public void LoadGameState()
+    {
+
+    }
 }

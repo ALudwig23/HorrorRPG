@@ -1,65 +1,91 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
-using Unity.VisualScripting;
-using UnityEditor.Search;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class BattleManager : MonoBehaviour
 {
-    private enum BattleState { PlayerTurn, MonsterTurn, BattleEnd}
-    [SerializeField] private BattleState _battleState;
-
+    private float _miniTimer = 1f;
     private float _waitTime = 0.1f;
+    private float _enemyCount;
+    private float _enemyTypeSpawnChance;
+
     private bool _battleWon;
-    private bool _monsterLimbsUIActive = false;
+    private bool _attackMissed;
+
     private string _text;
+    private string _leftMonster;
+    private string _middleMonster;
+    private string _rightMonster;
+
+    private enum BattleState { PlayerTurn, MonsterTurn, BattleEnd }
+
     public bool BattleWon
     {
         get { return _battleWon; }
     }
-    //Spawn Position
-    [SerializeField] private GameObject _spawnPositionMid;
-    [SerializeField] private GameObject _spawnPositionRight;
-    [SerializeField] private GameObject _spawnPositionLeft;
+
+    //Battle State
+    [Header("Battle State")]
+    [SerializeField] private BattleState _battleState;
+
+    //General Reference
+    [Header("General Object Reference")]
+    [SerializeField] private TMP_FontAsset _fontAsset;
+    [SerializeField] private Sprite _buttonSprite;
+    [SerializeField] private Canvas _canvas;
+    [SerializeField] private PlayerStats _playerStats;
+    [SerializeField] private DialogueTypingManager _dialogueTypingManager;
+    [SerializeField] private CursorMovement _cursorMovement;
+    private GameObject _previousSelection;
+    private Coroutine _coroutine;
+    private GameManager _gameManager;
 
     //Battle Options
+    [Header("Main Battle Options Reference")]
     [SerializeField] private GameObject _fightOption;
     [SerializeField] private Button _fightButton;
-    [SerializeField] private GameObject _specialActionsOption;
-    [SerializeField] private Button _specialActionsButton;
+    [SerializeField] private GameObject _statusOption;
+    [SerializeField] private Button _statusButton;
+    [SerializeField] private GameObject _actionsOption;
+    [SerializeField] private Button _actionsButton;
     [SerializeField] private GameObject _runOption;
     [SerializeField] private Button _runButton;
 
     //Fight Options
-    [SerializeField] private GameObject _selectedMonster;
-    [SerializeField] private List<GameObject> _selectedLimb;
+    [Header("Fight Options")]
 
     //Display UI
-    [SerializeField] private GameObject _displayOptionBox;
-    [SerializeField] private GameObject _playerStatus;
-    [SerializeField] private GameObject _statusEffect;
-    [SerializeField] private GameObject _sanityBar;
-    [SerializeField] private GameObject _dialogueBox;
+    [Header("General UI Display")]
+    [SerializeField] private TMP_Text _playerHealth;
+    [SerializeField] private TMP_Text _playerSanity;
     [SerializeField] private TMP_Text _dialogueText;
+    [SerializeField] private GameObject _mainDisplay;
+    [SerializeField] private GameObject _fightDisplay;
+    [SerializeField] private GameObject _statusDisplay;
+    [SerializeField] private GameObject _actionDisplay;
+    [SerializeField] private GameObject _uiBackground;
 
     //Monster Types
-    private GameObject _monsterPrefab;
-    [SerializeField] private GapingHoleMonster _gapingHoleMonster;
+    [Header("Monster Type Reference")]
+    [SerializeField] private GameObject _monsterPrefab1;
+    [SerializeField] private GameObject _miniMonsterPrefab1;
+    [SerializeField] private GameObject _gapingHoleMonster;
+    [SerializeField] private GameObject _miniGapingHoleMonster;
+    [SerializeField] private GapingHoleMonster _gapingHoleMonsterScript;
 
-    [SerializeField] private PlayerStats _playerStats;
-    [SerializeField] private DialogueTypingManager _dialogueTypingManager;
-    [SerializeField] private Coroutine _coroutine;
-    [SerializeField] private GameManager _gameManager;
-
+    [SerializeField] private SpiderMonster _spiderMonster;
 
     void Start()
     {
         _battleState = BattleState.PlayerTurn;
-        _playerStats = Resources.Load<PlayerStats>("PlayerStatsData");
+
         _gameManager = FindObjectOfType<GameManager>();
+
+        _playerHealth.text = $"Total HP: {(int)_playerStats.CurrentTotalHealth} / {(int)_playerStats.MaxTotalHealth}";
+        _playerSanity.text = $"Sanity: {(int)_playerStats.CurrentSanity} / {(int)_playerStats.MaxSanity}";
 
         StartCoroutine(MonsterSetup());
         StartCoroutine(HandleState());
@@ -67,81 +93,51 @@ public class BattleManager : MonoBehaviour
 
     void Update()
     {
-        Debug.Log(EventSystem.current);
-        SelectionUI();
+        if (_cursorMovement.EnterPressed == true)
+        {
+            StartCoroutine(TargetedMonsterLimbs());
+            _cursorMovement.EnterPressed = false;
+        }
     }
+
+    private void FixedUpdate()
+    {
+        //Debug.Log(EventSystem.current);
+    }
+
 
     private IEnumerator MonsterSetup()
     {
-        switch (_gameManager.CollidedMonsterType)
+        _enemyCount = Random.Range(1, 4);
+        _middleMonster = _gameManager.CollidedMonsterType;
+
+        //ColorBlock buttonSelectedColour;
+
+        switch (_middleMonster)
         {
             case "GapingHoleMonster":
-                
+
                 //Load the prefab for GapingHoleMonster
-                _monsterPrefab = Resources.Load<GameObject>("GapingHoleMonster");
+                _monsterPrefab1 = Resources.Load<GameObject>("GapingHoleMonster");
+                _miniMonsterPrefab1 = Resources.Load<GameObject>("GapingHoleMini");
 
-                //Set the prefab as middle position child object
-                GameObject gapingHoleMonster = Instantiate(_monsterPrefab);
-                gapingHoleMonster.transform.SetParent(_spawnPositionMid.transform);
+                //Set up prefab location
+                GameObject gapingHoleMonster = Instantiate(_monsterPrefab1);
+                gapingHoleMonster.transform.SetParent(_mainDisplay.transform);
+                gapingHoleMonster.transform.position = new Vector3(_mainDisplay.transform.position.x, _mainDisplay.transform.position.y, -1f);
 
-                _gapingHoleMonster = FindObjectOfType<GapingHoleMonster>();
+                GameObject miniGapingHoleMonster = Instantiate(_miniMonsterPrefab1);
+                miniGapingHoleMonster.transform.SetParent(_fightDisplay.transform);
+                miniGapingHoleMonster.transform.position = new Vector3(_fightDisplay.transform.position.x, _fightDisplay.transform.position.y, -1f);
+
+                _gapingHoleMonsterScript = miniGapingHoleMonster.GetComponent<GapingHoleMonster>();
                 yield return new WaitForSeconds(0.1f);
 
-                _gapingHoleMonster.CreateLimbTarget();
-
-                _selectedLimb.Add(_gapingHoleMonster.LeftLimbSelection);
-                _selectedLimb.Add(_gapingHoleMonster.RightLimbSelection);
-                _selectedLimb.Add(_gapingHoleMonster.HeadLimbSelection);
-
-                //Configure button image and colour
-                //Left Leg button
-                Button leftLegButton = _selectedLimb[0].GetComponent<Button>();
-                Image leftLegButtonImage = _selectedLimb[0].GetComponent<Image>();
-                ColorBlock selectedColour = leftLegButton.colors; //Main colour for selection
-
-                leftLegButton.targetGraphic = leftLegButtonImage;
-                leftLegButton.transition = Selectable.Transition.ColorTint;
-                selectedColour.selectedColor = Color.red;
-                leftLegButton.colors = selectedColour;
-
-                //Right Leg Button
-                Button rightLegButton = _selectedLimb[1].GetComponent<Button>();
-                Image rightLegButtonImage = _selectedLimb[1].GetComponent<Image>();
-
-                rightLegButton.targetGraphic = rightLegButtonImage;
-                rightLegButton.transition = Selectable.Transition.ColorTint;
-                rightLegButton.colors = selectedColour;
-
-                //Head Button
-                Button headButton = _selectedLimb[2].GetComponent<Button>();
-                Image headButtonImage = _selectedLimb[2].GetComponent<Image>();
-
-                headButton.targetGraphic = headButtonImage;
-                headButton.transition = Selectable.Transition.ColorTint;
-                headButton.colors = selectedColour;
-
-                //Options navigation configuration
-                Navigation leftLegButtonNavigation = leftLegButton.navigation;
-                leftLegButtonNavigation.mode = Navigation.Mode.Explicit;
-                leftLegButtonNavigation.selectOnRight = rightLegButton;
-                leftLegButton.navigation = leftLegButtonNavigation;
-
-                Navigation rightLegButtonNavigation = rightLegButton.navigation;
-                rightLegButtonNavigation.mode = Navigation.Mode.Explicit;
-                rightLegButtonNavigation.selectOnLeft = leftLegButton;
-                rightLegButtonNavigation.selectOnRight = headButton;
-                rightLegButton.navigation = rightLegButtonNavigation;
-
-                Navigation headButtonNavigation = headButton.navigation;
-                headButtonNavigation.mode = Navigation.Mode.Explicit;
-                headButtonNavigation.selectOnLeft = rightLegButton;
-                headButton.navigation = headButtonNavigation;
-
-                Debug.Log("Encountered Monster With a Gaping Hole");
                 break;
 
-            case "":
+            case "SpiderMonster":
 
+                _monsterPrefab1 = Resources.Load<GameObject>("SpiderMonster");
 
                 break;
         }
@@ -157,9 +153,10 @@ public class BattleManager : MonoBehaviour
             case BattleState.PlayerTurn:
 
                 _fightOption.SetActive(true);
-                _specialActionsOption.SetActive(true);
+                _statusOption.SetActive(true);
+                _actionsOption.SetActive(true);
                 _runOption.SetActive(true);
-                _displayOptionBox.SetActive(true);
+                _uiBackground.SetActive(true);
 
                 StopAllCoroutines();
                 EventSystem.current.SetSelectedGameObject(_fightOption);
@@ -167,52 +164,27 @@ public class BattleManager : MonoBehaviour
 
             case BattleState.MonsterTurn:
 
-                _fightOption.SetActive(false);
-                _specialActionsOption.SetActive(false);
-                _runOption.SetActive(false);
-                _displayOptionBox.SetActive(false);
+                _fightDisplay.SetActive(false);
+                _uiBackground.SetActive(false);
 
-                for (int i = 0; i < _selectedLimb.Count; i++)
+                //Wait for previous dialogue to finish
+                if (_attackMissed == false)
                 {
-                    _selectedLimb[i].SetActive(false);
+                    yield return new WaitUntil(() => _gapingHoleMonsterScript.FinishedDialogue == true);
+                    _gapingHoleMonsterScript.FinishedDialogue = false;
+                }
+                else
+                {
+                    yield return new WaitUntil(() => _dialogueTypingManager.ToNextDialogue == true);
                 }
 
-                if (_gapingHoleMonster != null)
-                {
-                    //Wait for previous dialogue to finish
-                    Debug.Log(_dialogueTypingManager.ToNextDialogue);
-                    yield return new WaitUntil(() => _gapingHoleMonster.FinishedDialogue == true);
-                    
-                    _gapingHoleMonster.FinishedDialogue = false;
+                StartCoroutine(HandleMonsterTurn());
 
-                    StartCoroutine(_gapingHoleMonster.OnDamage());
-                    yield return new WaitUntil(() => _gapingHoleMonster.FinishedDialogue == true);
-
-                    _gapingHoleMonster.FinishedDialogue = false;
-                    _gapingHoleMonster.OnDeath();
-
-                    //End early if enemy or player dies
-                    if (_gapingHoleMonster.MonsterDied == true || _playerStats.CurrentHealth <= 0f)
-                    {
-                        _battleState = BattleState.BattleEnd;
-                        StartCoroutine(HandleState());
-                    }
-                    else
-                    {
-                        StartCoroutine(_gapingHoleMonster.MovesetHandler());
-                        yield return new WaitUntil(() => _gapingHoleMonster.FinishedDialogue == true);
-
-                        _gapingHoleMonster.FinishedDialogue = false;
-
-                        _battleState = BattleState.PlayerTurn;
-                        StartCoroutine(HandleState());
-                    }
-                }
                 break;
 
             case BattleState.BattleEnd:
 
-                if (_playerStats.CurrentHealth > 0f)
+                if (_playerStats.CurrentTotalHealth > 0f)
                 {
                     _dialogueTypingManager.StopDialogue();
                     _text = "You killed the monster...";
@@ -221,7 +193,7 @@ public class BattleManager : MonoBehaviour
 
                     _battleWon = true;
                 }
-                else if (_playerStats.CurrentHealth <= 0f)
+                else if (_playerStats.CurrentTotalHealth <= 0f)
                 {
                     _dialogueTypingManager.StopDialogue();
                     _text = "You died...";
@@ -234,122 +206,197 @@ public class BattleManager : MonoBehaviour
         }
     }
 
-    private void SelectionUI()
-    {
-        //Show fight options
-        if (_battleState == BattleState.PlayerTurn && EventSystem.current.currentSelectedGameObject == _fightOption)
-        {
-            for (int i = 0; i < _selectedLimb.Count; i++)
-            {
-                _selectedLimb[i].SetActive(true);
-            }
-
-            if (Input.GetKeyDown(KeyCode.Return))
-            {
-                EventSystem.current.SetSelectedGameObject(_selectedLimb[0]);
-
-                if (_monsterLimbsUIActive == false)
-                {
-                    Debug.Log("ActiveUI");
-                    _monsterLimbsUIActive = true;
-                    StartCoroutine(MonsterLimbsUI());
-                }
-            }
-        }
-        //Show special actions options
-        if (EventSystem.current.currentSelectedGameObject == _specialActionsOption)
-        {
-            for (int i = 0; i < _selectedLimb.Count; i++)
-            {
-                _selectedLimb[i].SetActive(false);
-            }
-        }
-
-        //Show confirmation option to run
-        if (EventSystem.current.currentSelectedGameObject == _runOption)
-        {
-            for (int i = 0; i < _selectedLimb.Count; i++)
-            {
-                _selectedLimb[i].SetActive(false);
-            }
-        }
-    }
-
-    private IEnumerator MonsterLimbsUI()
+    private IEnumerator HandleMonsterTurn()
     {
         yield return new WaitForSeconds(_waitTime);
 
-        Debug.Log("MonsterLimbUIActive");
-        //GapingHoleMonster Selection
-        while (_gapingHoleMonster != null)
+        Debug.Log("Handling Monster Turn");
+
+        if (_leftMonster != null)
         {
-            if (EventSystem.current.currentSelectedGameObject == _selectedLimb[0])
+            switch (_leftMonster)
             {
-                if (Input.GetKeyDown(KeyCode.Return))
-                {
-                    if (_gapingHoleMonster.LeftLegHealth <= 0)
-                    {
-                        _dialogueTypingManager.StopDialogue();
-                        _text = "This part has already been destroyed";
-                        _dialogueTypingManager.StartDialogue(_text, _dialogueText);
-                    }
-                    else
-                    {
-                        _dialogueTypingManager.StopDialogue();
-                        StartCoroutine(_gapingHoleMonster.LeftLegDamaged());
-
-                        _battleState = BattleState.MonsterTurn;
-                        _monsterLimbsUIActive = false;
-                        StartCoroutine(HandleState());
-                        EventSystem.current.SetSelectedGameObject(null);
-                    }
-                }
+                case "":
+                    break;
             }
-            else if (EventSystem.current.currentSelectedGameObject == _selectedLimb[1])
-            {
-                if (Input.GetKeyDown(KeyCode.Return))
-                {
-                    if (_gapingHoleMonster.RightLegHealth <= 0)
-                    {
-                        _dialogueTypingManager.StopDialogue();
-                        _text = "This part has already been destroyed";
-                        _dialogueTypingManager.StartDialogue(_text, _dialogueText);
-                    }
-                    else
-                    {
-                        _dialogueTypingManager.StopDialogue();
-                        StartCoroutine(_gapingHoleMonster.RightLegDamaged());
-
-                        _battleState = BattleState.MonsterTurn;
-                        _monsterLimbsUIActive = false;
-                        StartCoroutine(HandleState());
-                        EventSystem.current.SetSelectedGameObject(null);
-                    }
-                }
-            }
-            else if (EventSystem.current.currentSelectedGameObject == _selectedLimb[2])
-            {
-                if (Input.GetKeyDown(KeyCode.Return))
-                {
-                    if (_gapingHoleMonster.HeadHealth <= 0)
-                    {
-                        _dialogueTypingManager.StopDialogue();
-                        _text = "This part has already been destroyed";
-                        _dialogueTypingManager.StartDialogue(_text, _dialogueText);
-                    }
-                    else
-                    {
-                        _dialogueTypingManager.StopDialogue();
-                        StartCoroutine(_gapingHoleMonster.HeadDamaged());
-
-                        _battleState = BattleState.MonsterTurn;
-                        _monsterLimbsUIActive = false;
-                        StartCoroutine(HandleState());
-                        EventSystem.current.SetSelectedGameObject(null);
-                    }
-                }
-            }
-            yield return null;
         }
+
+        if (_middleMonster != null)
+        {
+            switch (_middleMonster)
+            {
+                case "GapingHoleMonster":
+
+                    StartCoroutine(_gapingHoleMonsterScript.OnDamage());
+                    yield return new WaitUntil(() => _gapingHoleMonsterScript.FinishedDialogue == true);
+
+                    _gapingHoleMonsterScript.FinishedDialogue = false;
+                    _gapingHoleMonsterScript.OnDeath();
+
+                    //End early if enemy or player dies
+                    if (_gapingHoleMonsterScript.MonsterDied == true || _playerStats.CurrentTotalHealth <= 0f)
+                    {
+                        _battleState = BattleState.BattleEnd;
+                        StartCoroutine(HandleState());
+                    }
+                    else
+                    {
+                        StartCoroutine(_gapingHoleMonsterScript.MovesetHandler());
+                        yield return new WaitUntil(() => _gapingHoleMonsterScript.DamageDealt == true);
+                        _playerHealth.text = $"Total HP: {(int)_playerStats.CurrentTotalHealth} / {(int)_playerStats.MaxTotalHealth}";
+                        _playerSanity.text = $"Sanity: {(int)_playerStats.CurrentSanity} / {(int)_playerStats.MaxSanity}";
+                        _gapingHoleMonsterScript.DamageDealt = false;
+                        yield return new WaitUntil(() => _gapingHoleMonsterScript.FinishedDialogue == true);
+
+                        _gapingHoleMonsterScript.FinishedDialogue = false;
+
+                        Debug.Log("Finished State");
+                        _battleState = BattleState.PlayerTurn;
+                        StartCoroutine(HandleState());
+                    }
+
+                    break;
+            }
+        }
+
+        if (_rightMonster != null)
+        {
+            switch (_rightMonster)
+            {
+                case "":
+                    break;
+            }
+
+        }
+
+        yield return null;
+    }
+
+    //Limbs for respective monsters
+    private IEnumerator TargetedMonsterLimbs()
+    {
+        EventSystem.current.SetSelectedGameObject(null);
+
+        yield return new WaitForSeconds(_waitTime);
+
+        Debug.Log("Handling Target");
+
+        if (_leftMonster != null)
+        {
+            switch (_leftMonster)
+            {
+                case "":
+                    break;
+            }
+        }                                                    
+
+        if (_middleMonster != null)
+        {
+            switch (_middleMonster)
+            {
+                case "GapingHoleMonster":
+
+                    if (_gapingHoleMonsterScript.HeadTrigger == true)
+                    {
+                        if (_gapingHoleMonsterScript.HeadHealth <= 0)
+                        {
+                            _dialogueTypingManager.StopDialogue();
+                            _text = "This part has already been destroyed";
+                            _dialogueTypingManager.StartDialogue(_text, _dialogueText);
+                        }
+                        else
+                        {
+                            _dialogueTypingManager.StopDialogue();
+                            StartCoroutine(_gapingHoleMonsterScript.HeadDamaged());
+
+                            _battleState = BattleState.MonsterTurn;
+                            _attackMissed = false;
+                            StartCoroutine(HandleState());
+                        }
+                    }
+
+                    else if (_gapingHoleMonsterScript.BodyTrigger == true)
+                    {
+                        if (_gapingHoleMonsterScript.BodyHealth <= 0)
+                        {
+                            _dialogueTypingManager.StopDialogue();
+                            _text = "This part has already been destroyed";
+                            _dialogueTypingManager.StartDialogue(_text, _dialogueText);
+                        }
+                        else
+                        {
+                            _dialogueTypingManager.StopDialogue();
+                            StartCoroutine(_gapingHoleMonsterScript.BodyDamaged());
+
+                            _battleState = BattleState.MonsterTurn;
+                            _attackMissed = false;
+                            StartCoroutine(HandleState());
+                        }
+                    }
+
+                    else if (_gapingHoleMonsterScript.LeftLegTrigger == true)
+                    {
+                        if (_gapingHoleMonsterScript.LeftLegHealth <= 0)
+                        {
+                            _dialogueTypingManager.StopDialogue();
+                            _text = "This part has already been destroyed";
+                            _dialogueTypingManager.StartDialogue(_text, _dialogueText);
+                        }
+                        else
+                        {
+                            _dialogueTypingManager.StopDialogue();
+                            StartCoroutine(_gapingHoleMonsterScript.LeftLegDamaged());
+
+                            _battleState = BattleState.MonsterTurn;
+                            _attackMissed = false;
+                            StartCoroutine(HandleState());
+                        }
+                    }
+
+                    else if (_gapingHoleMonsterScript.RightLegTrigger == true)
+                    {
+                        if (_gapingHoleMonsterScript.RightLegHealth <= 0)
+                        {
+                            _dialogueTypingManager.StopDialogue();
+                            _text = "This part has already been destroyed";
+                            _dialogueTypingManager.StartDialogue(_text, _dialogueText);
+                        }
+                        else
+                        {
+                            _dialogueTypingManager.StopDialogue();
+                            StartCoroutine(_gapingHoleMonsterScript.RightLegDamaged());
+
+                            _battleState = BattleState.MonsterTurn;
+                            _attackMissed = false;
+                            StartCoroutine(HandleState());
+                        }
+                    }
+
+                    else
+                    {
+                        _dialogueTypingManager.StopDialogue();
+                        _text = "Your attack missed...";
+                        _dialogueTypingManager.StartDialogue(_text, _dialogueText);
+
+                        _attackMissed = true;
+                        _battleState = BattleState.MonsterTurn;
+                        StartCoroutine(HandleState());
+                    }
+
+                    break;
+            }
+        }
+
+        if (_rightMonster != null)
+        {
+            switch (_rightMonster)
+            {
+                case "":
+                    break;
+            }
+
+        }
+
+        yield return null;
     }
 }
