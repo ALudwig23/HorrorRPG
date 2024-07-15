@@ -5,10 +5,12 @@ TagManager:
   serializedVersion: 2
   tags:
   - GapingHoleMonster
+  - PauseTrigger
   - AttackPointer
   - AttackPointerCenter
   - InGameMenu
   - Key
+
   layers:
   - Default
   - TransparentFX
@@ -18,7 +20,9 @@ TagManager:
   - UI
   - PauseTrigger
   - Text
-  - oject2
+
+  - Wall
+
   - 
   - 
   - 
