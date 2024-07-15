@@ -7,35 +7,50 @@ using UnityEngine.TextCore.Text;
 
 public class GapingHoleMonster : MonoBehaviour
 {
-    private float _maxHealth = 200f;
+    private float _maxHealth = 500f;
     private float _currentHealth = 200f;
+    private float _headHealth = 50f;
+    private float _bodyHealth = 100f;
     private float _leftLegHealth = 25f;
     private float _rightLegHealth = 25f;
-    private float _headHealth = 50f;
     private float _damage = 20f;
     private float _sanityDamage = 25f;
+
     private int _movesRandomizer;
+
     private string _text;
+
     private bool _finishedDialogue = false;
     private bool _damageDealt = false;
     private bool _monsterDied = false;
+
+    private bool _headDestroyed = false;
+    private bool _bodyDestroyed = false;
     private bool _leftLegDestroyed = false;
     private bool _rightLegDestroyed = false;
-    private bool _headDestroyed = false;
+    
+    //Individual Body Part Scripts
+    [SerializeField] private GHM_Head _ghmHead;
+    [SerializeField] private GHM_Body _ghmBody;
+    [SerializeField] private GHM_LeftLeg _ghmLeftLeg;
+    [SerializeField] private GHM_RightLeg _ghmRightLeg;
 
-    [SerializeField] private GameObject _leftLimbSelection;
-    [SerializeField] private GameObject _rightLimbSelection;
-    [SerializeField] private GameObject _headLimbSelection;
+    //Store Body Part Trigger Values in main script
+    private bool _headTrigger;
+    private bool _bodyTrigger;
+    private bool _leftLegTrigger;
+    private bool _rightLegTrigger;
+
     [SerializeField] private GameObject _dialogueBox;
 
     [SerializeField] private TMP_FontAsset _fontAsset;
     [SerializeField] private Sprite _buttonSprite;
     [SerializeField] private TMP_Text _dialogueText;
-    [SerializeField] private Canvas _canvas;
 
     [SerializeField] private Coroutine _dialogueCoroutine;
     [SerializeField] private PlayerStats _playerStats;
     [SerializeField] private DialogueTypingManager _dialogueTypingManager;
+
     public float MaxHealth
     {
         get { return _maxHealth; }
@@ -45,6 +60,14 @@ public class GapingHoleMonster : MonoBehaviour
         get { return _currentHealth; }
         set { _currentHealth = value; }
     }
+    public float HeadHealth
+    {
+        get { return _headHealth; }
+    }
+    public float BodyHealth
+    {
+        get { return _bodyHealth; }
+    }
     public float LeftLegHealth
     {
         get { return _leftLegHealth; }
@@ -53,10 +76,7 @@ public class GapingHoleMonster : MonoBehaviour
     {
         get { return _rightLegHealth; }
     }
-    public float HeadHealth
-    {
-        get { return _headHealth; }
-    }
+    //=============================================================
     public float Damage
     {
         get { return _damage; }
@@ -65,6 +85,28 @@ public class GapingHoleMonster : MonoBehaviour
     {
         get { return _sanityDamage; }
     }
+    public bool MonsterDied
+    {
+        get { return _monsterDied; }
+    }
+
+    public bool HeadTrigger
+    {
+        get { return _headTrigger; }
+    }
+    public bool BodyTrigger
+    {
+        get { return _bodyTrigger; }
+    }
+    public bool LeftLegTrigger
+    {
+        get { return _leftLegTrigger; }
+    }
+    public bool RightLegTrigger
+    {
+        get { return _rightLegTrigger; }
+    }
+    //================================================================
     public bool FinishedDialogue
     {
         get { return _finishedDialogue; }
@@ -75,31 +117,24 @@ public class GapingHoleMonster : MonoBehaviour
         get { return _damageDealt; }
         set { _damageDealt = value; }
     }
-    public bool MonsterDied
+
+    private void Start()
     {
-        get { return _monsterDied; }
-    }
-    public GameObject LeftLimbSelection
-    {
-        get { return _leftLimbSelection; }
-    }
-    public GameObject RightLimbSelection
-    {
-        get { return _rightLimbSelection; }
-    }
-    public GameObject HeadLimbSelection
-    {
-        get { return _headLimbSelection; }
+        
+
+        _dialogueBox = GameObject.Find("DialogueBox");
+        _dialogueText = _dialogueBox.GetComponentInChildren<TextMeshProUGUI>();
     }
 
-    void Start()
+    private void Update()
     {
-        _playerStats = Resources.Load<PlayerStats>("PlayerStatsData");
-        _buttonSprite = Resources.Load<Sprite>("Unselected");
-        _dialogueBox = GameObject.Find("DialogueBox");
-        _dialogueText = _dialogueBox.GetComponentInChildren<TMP_Text>();
-        _canvas = FindObjectOfType<Canvas>();
+        //Debug.Log(_headTrigger);
+        _headTrigger = _ghmHead.TargetedHead;
+        _bodyTrigger = _ghmBody.TargetedBody;
+        _leftLegTrigger = _ghmLeftLeg.TargetedLeftLeg;
+        _rightLegTrigger = _ghmRightLeg.TargetedRightLeg;
     }
+
     public void OnDeath()
     {
         if (_currentHealth <= 0)
@@ -108,46 +143,96 @@ public class GapingHoleMonster : MonoBehaviour
             Destroy(gameObject);
         }
     }
-
-    public IEnumerator LeftLegDamaged()
-    {
-        _leftLegHealth -= _playerStats.Damage;
-        _currentHealth -= _playerStats.Damage;
-
-        _text = $"The creature's left leg takes damage";
-        _dialogueTypingManager.StartDialogue(_text, _dialogueText);
-        yield return new WaitUntil(() => _dialogueTypingManager.ToNextDialogue == true);
-
-        _finishedDialogue = true;
-    }
-
-    public IEnumerator RightLegDamaged()
-    {
-        _rightLegHealth -= _playerStats.Damage;
-        _currentHealth -= _playerStats.Damage;
-
-        _text = $"The creature's right leg takes damage";
-        _dialogueTypingManager.StartDialogue(_text, _dialogueText);
-        yield return new WaitUntil(() => _dialogueTypingManager.ToNextDialogue == true);
-
-        _finishedDialogue = true;
-    }
-
-
     public IEnumerator HeadDamaged()
     {
-        _headHealth -= _playerStats.Damage;
-        _currentHealth -= _playerStats.Damage;
+        _headHealth -= _playerStats.BaseDamage;
+        _currentHealth -= _playerStats.BaseDamage;
 
         _text = $"The creature's head takes damage";
         _dialogueTypingManager.StartDialogue(_text, _dialogueText);
         yield return new WaitUntil(() => _dialogueTypingManager.ToNextDialogue == true);
 
         _finishedDialogue = true;
+
+        _ghmHead.TargetedHead = false;
+        _ghmBody.TargetedBody = false;
+        _ghmLeftLeg.TargetedLeftLeg = false;
+        _ghmRightLeg.TargetedRightLeg = false;
+    }
+
+    public IEnumerator BodyDamaged()
+    {
+        _bodyHealth -= _playerStats.BaseDamage;
+        _currentHealth -= _playerStats.BaseDamage;
+
+        _text = $"The creature's body takes damage";
+        _dialogueTypingManager.StartDialogue(_text, _dialogueText);
+        yield return new WaitUntil(() => _dialogueTypingManager.ToNextDialogue == true);
+
+        _finishedDialogue = true;
+
+        _ghmHead.TargetedHead = false;
+        _ghmBody.TargetedBody = false;
+        _ghmLeftLeg.TargetedLeftLeg = false;
+        _ghmRightLeg.TargetedRightLeg = false;
+    }
+
+    public IEnumerator LeftLegDamaged()
+    {
+        _leftLegHealth -= _playerStats.BaseDamage;
+        _currentHealth -= _playerStats.BaseDamage;
+
+        _text = $"The creature's left leg takes damage";
+        _dialogueTypingManager.StartDialogue(_text, _dialogueText);
+        yield return new WaitUntil(() => _dialogueTypingManager.ToNextDialogue == true);
+
+        _finishedDialogue = true;
+
+        _ghmHead.TargetedHead = false;
+        _ghmBody.TargetedBody = false;
+        _ghmLeftLeg.TargetedLeftLeg = false;
+        _ghmRightLeg.TargetedRightLeg = false;
+    }
+
+    public IEnumerator RightLegDamaged()
+    {
+        _rightLegHealth -= _playerStats.BaseDamage;
+        _currentHealth -= _playerStats.BaseDamage;
+
+        _text = $"The creature's right leg takes damage";
+        _dialogueTypingManager.StartDialogue(_text, _dialogueText);
+        yield return new WaitUntil(() => _dialogueTypingManager.ToNextDialogue == true);
+
+        _finishedDialogue = true;
+
+        _ghmHead.TargetedHead = false;
+        _ghmBody.TargetedBody = false;
+        _ghmLeftLeg.TargetedLeftLeg = false;
+        _ghmRightLeg.TargetedRightLeg = false;
     }
 
     public IEnumerator OnDamage()
     {
+        if (_headHealth <= 0 && _headDestroyed == false)
+        {
+            _headDestroyed = true;
+            _currentHealth -= _maxHealth / 2f;
+
+            _text = $"The creature's head is destroyed";
+            _dialogueTypingManager.StartDialogue(_text, _dialogueText);
+            yield return new WaitUntil(() => _dialogueTypingManager.ToNextDialogue == true);
+        }
+
+        if (_bodyHealth <= 0 && _bodyDestroyed == false)
+        {
+            _bodyDestroyed = true;
+            _currentHealth -= _maxHealth / 3f;
+
+            _text = $"The creature's body is destroyed";
+            _dialogueTypingManager.StartDialogue(_text, _dialogueText);
+            yield return new WaitUntil(() => _dialogueTypingManager.ToNextDialogue == true);
+        }
+
         if (_leftLegHealth <= 0 && _leftLegDestroyed == false)
         {
             _leftLegDestroyed = true;
@@ -168,18 +253,6 @@ public class GapingHoleMonster : MonoBehaviour
             _dialogueTypingManager.StartDialogue(_text, _dialogueText);
             yield return new WaitUntil(() => _dialogueTypingManager.ToNextDialogue == true);
         }
-
-        if (_headHealth <= 0 && _headDestroyed == false)
-        {
-            _headDestroyed = true;
-            _currentHealth -= _maxHealth / 2f;
-
-            _text = $"The creature's head is destroyed";
-            _dialogueTypingManager.StartDialogue(_text, _dialogueText);
-            yield return new WaitUntil(() => _dialogueTypingManager.ToNextDialogue == true);
-        }
-
-        
 
         _finishedDialogue = true;
     }
@@ -210,7 +283,7 @@ public class GapingHoleMonster : MonoBehaviour
             case 1:
 
                 Debug.Log("Lunge");
-                _playerStats.CurrentHealth -= _damage * ( 100 / (100 + _playerStats.BaseDefence));
+                _playerStats.CurrentTotalHealth -= _damage * ( 100 / (100 + _playerStats.BaseDefence));
                 Debug.Log("Damaged");
 
                 _text = $"The creature lunges towards you";
@@ -224,111 +297,6 @@ public class GapingHoleMonster : MonoBehaviour
                 _finishedDialogue = true;
                 break;
         }
-    }
-
-    //Create UI for limb selection for attacking
-    public void CreateLimbTarget()
-    {
-        //Left Leg UI
-        _leftLimbSelection = new GameObject("LeftLeg");
-        _leftLimbSelection.transform.SetParent(_canvas.transform, false);
-
-        _leftLimbSelection.AddComponent<Button>();
-        
-        //Create RectTransform for button
-        RectTransform leftLegRectTransform =_leftLimbSelection.AddComponent<RectTransform>();
-        leftLegRectTransform.anchoredPosition = new Vector2(-74f, -145.5f);
-        leftLegRectTransform.sizeDelta = new Vector2(115f, 147f);
-        
-        //Set image for button
-        Image leftLegButtonImage = _leftLimbSelection.AddComponent<Image>();
-        leftLegButtonImage.sprite = _buttonSprite;
-
-        //Create child object
-        GameObject leftLegChild = new GameObject("LeftLegChild");
-        leftLegChild.transform.SetParent(_leftLimbSelection.transform);
-
-        //Add Text in child object
-        TMP_Text leftLegText= leftLegChild.AddComponent<TextMeshProUGUI>();
-        leftLegText.text = "Left Leg";
-        leftLegText.fontSize = 24f;
-        leftLegText.color = Color.black;
-        leftLegText.alignment = TextAlignmentOptions.Center;
-
-        //Set text object as the same size and position as parent
-        RectTransform leftLegTextRectTransform = leftLegText.GetComponent<RectTransform>();
-        leftLegTextRectTransform.position = leftLegRectTransform.position;
-        leftLegTextRectTransform.sizeDelta = leftLegRectTransform.sizeDelta;
-        leftLegTextRectTransform.localScale = leftLegRectTransform.localScale;
-
-        //================================================================================================
-
-        //Right Leg UI
-        _rightLimbSelection = new GameObject("RightLeg");
-        _rightLimbSelection.transform.SetParent(_canvas.transform, false);
-
-        _rightLimbSelection.AddComponent<Button>();
-
-        //Create RectTransform for button
-        RectTransform rightLegRectTransform = _rightLimbSelection.AddComponent<RectTransform>();
-        rightLegRectTransform.anchoredPosition = new Vector2(60f, -145.5f);
-        rightLegRectTransform.sizeDelta = new Vector2(115f, 147f);
-
-        //Set image for button
-        Image rightLegButtonImage = _rightLimbSelection.AddComponent<Image>();
-        rightLegButtonImage.sprite = _buttonSprite;
-
-        //Create child object
-        GameObject rightLegChild = new GameObject("RightLegChild");
-        rightLegChild.transform.SetParent(_rightLimbSelection.transform);
-
-        //Add Text in child object
-        TMP_Text rightLegText = rightLegChild.AddComponent<TextMeshProUGUI>();
-        rightLegText.text = "Right Leg";
-        rightLegText.fontSize = 24f;
-        rightLegText.color = Color.black;
-        rightLegText.alignment = TextAlignmentOptions.Center;
-
-        //Set text object as the same size and position as parent
-        RectTransform rightLegTextRectTransform = rightLegText.GetComponent<RectTransform>();
-        rightLegTextRectTransform.position = rightLegRectTransform.position;
-        rightLegTextRectTransform.sizeDelta = rightLegRectTransform.sizeDelta;
-        rightLegTextRectTransform.localScale = rightLegRectTransform.localScale;
-
-        //================================================================================================
-
-        //Right Leg UI
-        _headLimbSelection = new GameObject("Head");
-        _headLimbSelection.transform.SetParent(_canvas.transform, false);
-
-        _headLimbSelection.AddComponent<Button>();
-
-        //Create RectTransform for button
-        RectTransform headRectTransform = _headLimbSelection.AddComponent<RectTransform>();
-        headRectTransform.anchoredPosition = new Vector2(194f, -145.5f);
-        headRectTransform.sizeDelta = new Vector2(115f, 147f);
-
-        //Set image for button
-        Image headButtonImage = _headLimbSelection.AddComponent<Image>();
-        headButtonImage.sprite = _buttonSprite;
-
-        //Create child object
-        GameObject headChild = new GameObject("headChild");
-        headChild.transform.SetParent(_headLimbSelection.transform);
-
-        //Add Text in child object
-        TMP_Text headText = headChild.AddComponent<TextMeshProUGUI>();
-        headText.text = "Head";
-        headText.fontSize = 24f;
-        headText.font = _fontAsset;
-        headText.color = Color.black;
-        headText.alignment = TextAlignmentOptions.Center;
-
-        //Set text object as the same size and position as parent
-        RectTransform headTextRectTransform = headText.GetComponent<RectTransform>();
-        headTextRectTransform.position = headRectTransform.position;
-        headTextRectTransform.sizeDelta = headRectTransform.sizeDelta;
-        headTextRectTransform.localScale = headRectTransform.localScale;
     }
 }
 

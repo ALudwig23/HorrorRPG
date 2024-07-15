@@ -8,6 +8,7 @@ public class GameManager : MonoBehaviour
 {
     private int _currentRoomScene = 0;
     private int _combatScene = 1;
+    private float _waitTime = 0.5f;
     private string _collidedMonsterType;
 
     public string CollidedMonsterType
@@ -15,11 +16,16 @@ public class GameManager : MonoBehaviour
         get { return _collidedMonsterType; }
     }
 
+    [SerializeField] private Canvas _canvas;
+    [SerializeField] private GameObject _inGameMenu;
+
     //Scripts reference
     [SerializeField] private CheckPlayerCollision _checkPlayerCollision;
     [SerializeField] private TeleportTrigger _teleportTrigger;
     [SerializeField] private PlayerMovement _playerMovement;
     [SerializeField] private BattleManager _battleManager;
+    [SerializeField] private PlayerStats _playerStats;
+    [SerializeField] private HandleInGameMenu _handleInGameMenu;
 
     private static GameManager _instance = null;
     public static GameManager Instance
@@ -47,6 +53,17 @@ public class GameManager : MonoBehaviour
     private void Update()
     {
         CollisionHandler();
+
+        if (_waitTime >= 0f)
+        {
+            _waitTime -= Time.deltaTime;
+        }
+
+        if (Input.GetKeyDown(KeyCode.I) && _waitTime <= 0f)
+        {
+            HandleInGameMenu();
+            _waitTime = 1f;
+        }
     }
 
     private void FixedUpdate()
@@ -124,4 +141,39 @@ public class GameManager : MonoBehaviour
             Instance._currentRoomScene = _teleportTrigger.LoadScene;
         }
     } 
+
+    public void HandleInGameMenu()
+    { 
+        if (_handleInGameMenu == null)
+        {
+            _handleInGameMenu = new HandleInGameMenu();
+        }
+        if (_handleInGameMenu == null)
+            return;
+
+        if (_canvas == null)
+        {
+            _canvas = FindObjectOfType<Canvas>();
+
+            Transform inGameMenuTransform = _canvas.transform.Find("InGameMenu");
+            _inGameMenu = inGameMenuTransform.gameObject;
+        }
+        if (_inGameMenu == null)
+            return;
+
+        Debug.Log("works");
+
+        _handleInGameMenu.OpenOrCloseInGameMenu(_inGameMenu);
+    }
+
+    public void SaveGameState()
+    {
+        SaveData.SavePlayerStats(_playerStats);
+
+    }
+
+    public void LoadGameState()
+    {
+
+    }
 }
