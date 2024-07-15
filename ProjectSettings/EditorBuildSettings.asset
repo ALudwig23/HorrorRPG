@@ -6,11 +6,11 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/InCombat.unity
-    guid: bfcdfd985bd99594ba27cb7ff8ac2cb1
-  - enabled: 1
     path: Assets/Scenes/MainMenu.unity
     guid: 69cc75f291a913e49acab91cb8af5dfc
+  - enabled: 1
+    path: Assets/Scenes/InCombat.unity
+    guid: bfcdfd985bd99594ba27cb7ff8ac2cb1
   - enabled: 1
     path: Assets/Scenes/LevelSelect.unity
     guid: 2b1e0e162f92dcc469b9845c4f1b832d

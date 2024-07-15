@@ -324,8 +324,8 @@ MonoBehaviour:
   m_ShadowVolumeIntensityEnabled: 0
   m_ShadowVolumeIntensity: 0.75
   m_LocalBounds:
-    m_Center: {x: -0.113600016, y: 3.9850998, z: 0}
-    m_Extent: {x: 6.6956997, y: 5.9653997, z: 0}
+    m_Center: {x: -0.11325002, y: 3.9849, z: 0}
+    m_Extent: {x: 6.6950502, y: 5.9658, z: 0}
   m_PointLightInnerAngle: 38.11
   m_PointLightOuterAngle: 99.28
   m_PointLightInnerRadius: 3.1570146
@@ -356,7 +356,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b606a27a2ac1b174da92a51a86fd6a82, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _lampLight: {fileID: 0}
+  _lampLight: {fileID: 299638147}
   _flickerCooldown:
     CurrentProgress: 0
     Duration: 1
@@ -980,8 +980,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ad7f2823a66f72c4ebc9ea7a8c7acb83, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _playerCamera: {fileID: 0}
   _checkPlayerCollision: {fileID: 0}
+  _teleportTrigger: {fileID: 0}
   _playerMovement: {fileID: 0}
   _battleManager: {fileID: 0}
 --- !u!1 &1968029540
@@ -1052,8 +1052,8 @@ Canvas:
   m_GameObject: {fileID: 1968029540}
   m_Enabled: 1
   serializedVersion: 3
-  m_RenderMode: 0
-  m_Camera: {fileID: 0}
+  m_RenderMode: 1
+  m_Camera: {fileID: 505235208}
   m_PlaneDistance: 100
   m_PixelPerfect: 0
   m_ReceivesEvents: 1

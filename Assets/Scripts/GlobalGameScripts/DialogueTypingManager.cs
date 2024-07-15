@@ -46,7 +46,7 @@ public class DialogueTypingManager
     {
         _dialogueText = dialogueText;
         _dialogueText.text = "";
-        Debug.Log("typing");
+        //Debug.Log("typing");
         foreach (char letter in dialogue.ToCharArray())
         {
             _dialogueText.text += letter;
