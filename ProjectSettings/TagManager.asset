@@ -10,19 +10,16 @@ TagManager:
   - AttackPointerCenter
   - InGameMenu
   - Key
-
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - Objects
+  - 
   - Water
   - UI
-  - PauseTrigger
-  - Text
-
-  - Wall
-
+  - 
+  - 
+  - 
   - 
   - 
   - 
@@ -48,20 +45,17 @@ TagManager:
   - 
   m_SortingLayers:
   - name: Background
-    uniqueID: 1976876301
+    uniqueID: 3744528645
     locked: 0
   - name: Default
     uniqueID: 0
     locked: 0
-  - name: Objects (back)
-    uniqueID: 2084910863
+  - name: Player
+    uniqueID: 993837085
     locked: 0
-  - name: Teleporters
-    uniqueID: 1109509025
+  - name: Monster
+    uniqueID: 3835355207
     locked: 0
-  - name: Player & Monster
-    uniqueID: 3679741025
-    locked: 0
-  - name: Objects (front)
-    uniqueID: 2871669145
+  - name: Object
+    uniqueID: 761116891
     locked: 0
