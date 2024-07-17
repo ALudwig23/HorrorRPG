@@ -37,7 +37,7 @@ public class CursorMovement : MonoBehaviour
             _waitTime -= Time.deltaTime;
         }
 
-        if (Input.GetKeyDown(KeyCode.Return) || _waitTime == 0f)
+        if (Input.GetKeyDown(KeyCode.Return) && _waitTime <= 0f)
         {
             Debug.Log("Enter Pressed");
             

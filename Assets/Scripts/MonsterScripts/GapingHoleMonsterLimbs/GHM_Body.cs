@@ -68,11 +68,13 @@ public class GHM_Body : MonoBehaviour
         {
             Debug.Log("No Longer On Body");
             _targetingBody= false;
+            _targetedBody = false;
         }
         if (collision.CompareTag("AttackPointerCenter"))
         {
             Debug.Log("No Longer Prioritizing Body");
             _targetingBody = false;
+            _targetedBody = false;
             _prioritizedBody = false;
         }
     }

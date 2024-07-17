@@ -4,6 +4,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using UnityEngine.Rendering.Universal;
 
 public class BattleManager : MonoBehaviour
 {
@@ -39,6 +40,7 @@ public class BattleManager : MonoBehaviour
     [SerializeField] private PlayerStats _playerStats;
     [SerializeField] private DialogueTypingManager _dialogueTypingManager;
     [SerializeField] private CursorMovement _cursorMovement;
+    [SerializeField] private Light2D _battleSpotLight;
     private GameObject _previousSelection;
     private Coroutine _coroutine;
     private GameManager _gameManager;
@@ -105,6 +107,21 @@ public class BattleManager : MonoBehaviour
         //Debug.Log(EventSystem.current);
     }
 
+    private void CheckSanity()
+    {
+        if (_playerStats.CurrentSanity <= 50f)
+        {
+            _battleSpotLight.intensity = 0f;
+            Debug.Log("SanityLow");
+            
+            SpriteRenderer[] fightDisplayMonsters = _fightDisplay.GetComponentsInChildren<SpriteRenderer>();
+
+            foreach (SpriteRenderer spriteRenderer in fightDisplayMonsters)
+            {
+                spriteRenderer.enabled = false;
+            }
+        }
+    }
 
     private IEnumerator MonsterSetup()
     {
@@ -249,6 +266,8 @@ public class BattleManager : MonoBehaviour
                         yield return new WaitUntil(() => _gapingHoleMonsterScript.FinishedDialogue == true);
 
                         _gapingHoleMonsterScript.FinishedDialogue = false;
+
+                        CheckSanity();
 
                         Debug.Log("Finished State");
                         _battleState = BattleState.PlayerTurn;

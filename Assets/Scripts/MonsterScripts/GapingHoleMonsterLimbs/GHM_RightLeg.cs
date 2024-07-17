@@ -68,12 +68,14 @@ public class GHM_RightLeg : MonoBehaviour
         {
             Debug.Log("No Longer On Right Leg");
             _targetingRightLeg = false;
+            _targetedRightLeg = false;
         }
 
         if (collision.CompareTag("AttackPointerCenter"))
         {
             Debug.Log("No Longer Prioritizing Right Leg");
             _targetingRightLeg = false;
+            _targetedRightLeg = false;
             _prioritizedRightLeg = false;
         }
     }

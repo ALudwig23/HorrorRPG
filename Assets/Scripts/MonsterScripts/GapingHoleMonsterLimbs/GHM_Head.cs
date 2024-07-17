@@ -67,12 +67,14 @@ public class GHM_Head : MonoBehaviour
         {
             Debug.Log("No Longer On Head");
             _targetingHead = false;
+            _targetedHead = false;
         }
 
         if (collision.CompareTag("AttackPointerCenter"))
         {
             Debug.Log("No Longer Prioritizing Head");
             _targetingHead = false;
+            _targetedHead = false;
             _prioritizedHead = false;
         }
     }

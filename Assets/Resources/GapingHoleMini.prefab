@@ -341,8 +341,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 761116891
+  m_SortingLayer: 3
   m_SortingOrder: 0
   m_Sprite: {fileID: 7914160839747180004, guid: 906e55a789087a84c9eb91d887dd3f17, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -375,7 +375,6 @@ MonoBehaviour:
   _fontAsset: {fileID: 11400000, guid: 0986cff18c849434dab1b9782a299882, type: 2}
   _buttonSprite: {fileID: -5877817536159294332, guid: f2e4e41b1c3a48c4e96da7ff9d352857, type: 3}
   _dialogueText: {fileID: 0}
-  _canvas: {fileID: 0}
   _playerStats: {fileID: 11400000, guid: 08d500c0ef2c0ac4f95c63e9f7d52c55, type: 2}
   _dialogueTypingManager:
     _typingSpeed: 0.04
