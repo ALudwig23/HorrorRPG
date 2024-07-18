@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -11,22 +12,22 @@ public class NavigationManager : MonoBehaviour
     
     //Main Battle Options
     [Header("Main Battle Options")]
-    [SerializeField] private GameObject FightOption;
-    [SerializeField] private GameObject StatusOption;
-    [SerializeField] private GameObject ActionOption;
-    [SerializeField] private GameObject RunOption;
+    [SerializeField] private GameObject _fightOption;
+    [SerializeField] private GameObject _statusOption;
+    [SerializeField] private GameObject _actionOption;
+    [SerializeField] private GameObject _runOption;
 
-    //Fight UI
-    [Header("Fight UI Display")]
-    [SerializeField] private GameObject FightDisplay;
+    //Attack Pointer
+    [Header("Pointer")]
+    [SerializeField] private GameObject _pointer;
 
-    //Status UI
-    [Header("Status UI Display")]
-    [SerializeField] private GameObject StatusDisplay;
-
-    //Action UI
-    [Header("Action UI Display")]
-    [SerializeField] private GameObject ActionDisplay;
+    //UI Display
+    [Header("UI Display")]
+    [SerializeField] private GameObject _uiBackground;
+    [SerializeField] private GameObject _playerBodyDisplay;
+    [SerializeField] private GameObject _statusEffectDisplay;
+    [SerializeField] private GameObject _statusDisplay;
+    [SerializeField] private GameObject _actionDisplay;
 
     private void Update()
     {
@@ -36,7 +37,7 @@ public class NavigationManager : MonoBehaviour
         }
 
         //Return to previous option
-        if (Input.GetKeyDown(KeyCode.Backspace) || _waitTime == 0f)
+        if (Input.GetKeyDown(KeyCode.Backspace) && _waitTime <= 0f)
         {
             if (_previousSelectedOption != null)
             {
@@ -50,35 +51,39 @@ public class NavigationManager : MonoBehaviour
     //Main Battle Options
     public void FightButtonPressed()
     {
-        FightOption.SetActive(false);
-        StatusOption.SetActive(false);
-        ActionOption.SetActive(false);
-        RunOption.SetActive(false);
+        _fightOption.SetActive(false);
+        _statusOption.SetActive(false);
+        _actionOption.SetActive(false);
+        _runOption.SetActive(false);
 
-        FightDisplay.SetActive(true);
-        _previousSelectedOption = FightOption;
+        _uiBackground.SetActive(false);
+        _playerBodyDisplay.SetActive(false);
+        _statusEffectDisplay.SetActive(false);
+
+        _pointer.SetActive(true);
+        _previousSelectedOption = _fightOption;
     }
 
     public void StatusButtonPressed()
     {
-        FightOption.SetActive(false);
-        StatusOption.SetActive(false);
-        ActionOption.SetActive(false);
-        RunOption.SetActive(false);
+        _fightOption.SetActive(false);
+        _statusOption.SetActive(false);
+        _actionOption.SetActive(false);
+        _runOption.SetActive(false);
 
-        StatusDisplay.SetActive(true);
-        _previousSelectedOption = StatusOption;
+        _statusDisplay.SetActive(true);
+        _previousSelectedOption = _statusOption;
     }
 
     public void ActionOptionPressed()
     {
-        FightOption.SetActive(false);
-        StatusOption.SetActive(false);
-        ActionOption.SetActive(false);
-        RunOption.SetActive(false);
+        _fightOption.SetActive(false);
+        _statusOption.SetActive(false);
+        _actionOption.SetActive(false);
+        _runOption.SetActive(false);
 
-        ActionDisplay.SetActive(true);
-        _previousSelectedOption = ActionOption;
+        _actionDisplay.SetActive(true);
+        _previousSelectedOption = _actionOption;
     }
 
     //Actions
@@ -100,24 +105,38 @@ public class NavigationManager : MonoBehaviour
     //Function to return to previous selection
     private void ReturnToPreviousSelection()
     {
-        if (FightDisplay.activeSelf == true)
+        if (_pointer.activeSelf == true)
         {
-            FightOption.SetActive(true);
-            StatusOption.SetActive(true);
-            ActionOption.SetActive(true);
-            RunOption.SetActive(true);
+            _fightOption.SetActive(true);
+            _statusOption.SetActive(true);
+            _actionOption.SetActive(true);
+            _runOption.SetActive(true);
 
-            FightDisplay.SetActive(false);
+            _uiBackground.SetActive(true);
+            _playerBodyDisplay.SetActive(true);
+            _statusEffectDisplay.SetActive(true);
+
+            _pointer.SetActive(false);
             _previousSelectedOption = null;
         }
-        else if (StatusDisplay.activeSelf == true)
+        else if (_statusDisplay.activeSelf == true)
         {
-            FightOption.SetActive(true);
-            StatusOption.SetActive(true);
-            ActionOption.SetActive(true);
-            RunOption.SetActive(true);
+            _fightOption.SetActive(true);
+            _statusOption.SetActive(true);
+            _actionOption.SetActive(true);
+            _runOption.SetActive(true);
 
-            StatusDisplay.SetActive(false);
+            _statusDisplay.SetActive(false);
+            _previousSelectedOption = null;
+        }
+        else if (_actionDisplay.activeSelf == true)
+        {
+            _fightOption.SetActive(true);
+            _statusOption.SetActive(true);
+            _actionOption.SetActive(true);
+            _runOption.SetActive(true);
+
+            _actionDisplay.SetActive(false);
             _previousSelectedOption = null;
         }
     }

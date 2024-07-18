@@ -8,10 +8,15 @@ using UnityEngine.Rendering.Universal;
 
 public class BattleManager : MonoBehaviour
 {
-    private float _miniTimer = 1f;
     private float _waitTime = 0.1f;
     private float _enemyCount;
     private float _enemyTypeSpawnChance;
+    private float _randomXPosition;
+    private float _randomYPosition;
+    private float _minXSpawnPosition =  -320f;
+    private float _maxXSpawnPosition = 318f;
+    private float _minYSpawnPosition = -137f;
+    private float _maxYSpawnPosition = 141f;
 
     private bool _battleWon;
     private bool _attackMissed;
@@ -64,10 +69,12 @@ public class BattleManager : MonoBehaviour
     [SerializeField] private TMP_Text _playerHealth;
     [SerializeField] private TMP_Text _playerSanity;
     [SerializeField] private TMP_Text _dialogueText;
+    [SerializeField] private GameObject _pointer;
     [SerializeField] private GameObject _mainDisplay;
-    [SerializeField] private GameObject _fightDisplay;
     [SerializeField] private GameObject _statusDisplay;
     [SerializeField] private GameObject _actionDisplay;
+    [SerializeField] private GameObject _playerBodyDisplay;
+    [SerializeField] private GameObject _statusEffectDisplay;
     [SerializeField] private GameObject _uiBackground;
 
     //Monster Types
@@ -75,7 +82,6 @@ public class BattleManager : MonoBehaviour
     [SerializeField] private GameObject _monsterPrefab1;
     [SerializeField] private GameObject _miniMonsterPrefab1;
     [SerializeField] private GameObject _gapingHoleMonster;
-    [SerializeField] private GameObject _miniGapingHoleMonster;
     [SerializeField] private GapingHoleMonster _gapingHoleMonsterScript;
 
     [SerializeField] private SpiderMonster _spiderMonster;
@@ -95,10 +101,9 @@ public class BattleManager : MonoBehaviour
 
     void Update()
     {
-        if (_cursorMovement.EnterPressed == true)
+        if (_cursorMovement.EnterPressed == true && _coroutine == null)
         {
-            StartCoroutine(TargetedMonsterLimbs());
-            _cursorMovement.EnterPressed = false;
+            _coroutine = StartCoroutine(TargetedMonsterLimbs());
         }
     }
 
@@ -109,17 +114,14 @@ public class BattleManager : MonoBehaviour
 
     private void CheckSanity()
     {
-        if (_playerStats.CurrentSanity <= 50f)
+        if (_playerStats.CurrentSanity <= 75f)
         {
             _battleSpotLight.intensity = 0f;
             Debug.Log("SanityLow");
-            
-            SpriteRenderer[] fightDisplayMonsters = _fightDisplay.GetComponentsInChildren<SpriteRenderer>();
 
-            foreach (SpriteRenderer spriteRenderer in fightDisplayMonsters)
-            {
-                spriteRenderer.enabled = false;
-            }
+            _randomXPosition = Random.Range(_minXSpawnPosition, _maxXSpawnPosition);
+            _randomYPosition = Random.Range(_minYSpawnPosition, _maxYSpawnPosition);
+            _gapingHoleMonster.transform.localPosition = new Vector2(_randomXPosition, _randomYPosition);
         }
     }
 
@@ -136,18 +138,13 @@ public class BattleManager : MonoBehaviour
 
                 //Load the prefab for GapingHoleMonster
                 _monsterPrefab1 = Resources.Load<GameObject>("GapingHoleMonster");
-                _miniMonsterPrefab1 = Resources.Load<GameObject>("GapingHoleMini");
 
                 //Set up prefab location
-                GameObject gapingHoleMonster = Instantiate(_monsterPrefab1);
-                gapingHoleMonster.transform.SetParent(_mainDisplay.transform);
-                gapingHoleMonster.transform.position = new Vector3(_mainDisplay.transform.position.x, _mainDisplay.transform.position.y, -1f);
+                _gapingHoleMonster = Instantiate(_monsterPrefab1);
+                _gapingHoleMonster.transform.SetParent(_mainDisplay.transform);
+                _gapingHoleMonster.transform.position = new Vector3(_mainDisplay.transform.position.x, _mainDisplay.transform.position.y + 2f, _mainDisplay.transform.position.z);
 
-                GameObject miniGapingHoleMonster = Instantiate(_miniMonsterPrefab1);
-                miniGapingHoleMonster.transform.SetParent(_fightDisplay.transform);
-                miniGapingHoleMonster.transform.position = new Vector3(_fightDisplay.transform.position.x, _fightDisplay.transform.position.y, -1f);
-
-                _gapingHoleMonsterScript = miniGapingHoleMonster.GetComponent<GapingHoleMonster>();
+                _gapingHoleMonsterScript = _gapingHoleMonster.GetComponent<GapingHoleMonster>();
                 yield return new WaitForSeconds(0.1f);
 
                 break;
@@ -174,14 +171,19 @@ public class BattleManager : MonoBehaviour
                 _actionsOption.SetActive(true);
                 _runOption.SetActive(true);
                 _uiBackground.SetActive(true);
+                _playerBodyDisplay.SetActive(true);
+                _statusEffectDisplay.SetActive(true);
 
+               
+
+                _coroutine = null;
                 StopAllCoroutines();
                 EventSystem.current.SetSelectedGameObject(_fightOption);
                 break;
 
             case BattleState.MonsterTurn:
 
-                _fightDisplay.SetActive(false);
+                _pointer.SetActive(false);
                 _uiBackground.SetActive(false);
 
                 //Wait for previous dialogue to finish
@@ -297,6 +299,7 @@ public class BattleManager : MonoBehaviour
         EventSystem.current.SetSelectedGameObject(null);
 
         yield return new WaitForSeconds(_waitTime);
+        _cursorMovement.EnterPressed = false;
 
         Debug.Log("Handling Target");
 

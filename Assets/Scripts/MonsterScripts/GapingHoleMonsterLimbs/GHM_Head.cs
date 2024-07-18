@@ -17,10 +17,14 @@ public class GHM_Head : MonoBehaviour
     [SerializeField] private GHM_LeftLeg _ghmLeftLeg;
     [SerializeField] private GHM_RightLeg _ghmRightLeg;
     [SerializeField] private CursorMovement _cursorMovement;
+    private Canvas _canvas;
+    private Transform _pointerTransform;
 
     private void Start()
     {
-        _cursorMovement = FindObjectOfType<CursorMovement>();
+        _canvas = FindObjectOfType<Canvas>();
+        _pointerTransform = _canvas.transform.Find("Pointer");
+        _cursorMovement = _pointerTransform.GetComponent<CursorMovement>();
     }
 
     private void Update()

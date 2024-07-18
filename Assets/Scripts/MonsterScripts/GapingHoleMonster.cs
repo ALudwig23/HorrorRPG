@@ -120,8 +120,6 @@ public class GapingHoleMonster : MonoBehaviour
 
     private void Start()
     {
-        
-
         _dialogueBox = GameObject.Find("DialogueBox");
         _dialogueText = _dialogueBox.GetComponentInChildren<TextMeshProUGUI>();
     }
