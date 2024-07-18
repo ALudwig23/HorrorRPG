@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class KeyPickup : MonoBehaviour
+public class BoxSmash : MonoBehaviour
 {
+    
     public GameObject pickupTextUI;  // Assign the Text UI element here
-    public Item keyItem;  // Assign the key item in the Inspector
+    public float displayTime = 2.0f; // How long to display the message
 
     private bool isPlayerInRange = false;
-    private PlayerInventory playerInventory;
 
     void Start()
     {
@@ -23,16 +23,29 @@ public class KeyPickup : MonoBehaviour
     {
         if (isPlayerInRange && Input.GetKeyDown(KeyCode.E))
         {
-            if (playerInventory != null)
-            {
-                playerInventory.AddItem(keyItem);
-                Destroy(gameObject);
+            SmashBox();
+        }
+    }
 
-                if (pickupTextUI != null)
-                {
-                    pickupTextUI.SetActive(false);
-                }
-            }
+    private void SmashBox()
+    {
+       
+
+        if (pickupTextUI != null)
+        {
+            pickupTextUI.SetActive(true);
+            StartCoroutine(HidePickupTextAfterDelay());
+        }
+
+        Destroy(gameObject);
+    }
+
+    private IEnumerator HidePickupTextAfterDelay()
+    {
+        yield return new WaitForSeconds(displayTime);
+        if (pickupTextUI != null)
+        {
+            pickupTextUI.SetActive(false);
         }
     }
 
@@ -41,12 +54,6 @@ public class KeyPickup : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             isPlayerInRange = true;
-            playerInventory = other.GetComponent<PlayerInventory>();
-
-            if (pickupTextUI != null)
-            {
-                pickupTextUI.SetActive(true);
-            }
         }
     }
 
@@ -55,12 +62,6 @@ public class KeyPickup : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             isPlayerInRange = false;
-            playerInventory = null;
-
-            if (pickupTextUI != null)
-            {
-                pickupTextUI.SetActive(false);
-            }
         }
     }
 }

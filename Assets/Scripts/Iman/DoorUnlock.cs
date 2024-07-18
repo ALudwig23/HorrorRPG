@@ -4,19 +4,23 @@ using UnityEngine;
 
 public class DoorUnlock : MonoBehaviour
 {
+    public string keyItemName;  // The name of the key item required to unlock the door
     private bool isPlayerInRange = false;
-    private Key playerKeyHolder;
+    private PlayerInventory playerInventory;
 
     void Update()
     {
         if (isPlayerInRange && Input.GetKeyDown(KeyCode.E))
         {
-            if (playerKeyHolder != null && playerKeyHolder.hasKey)
+            if (playerInventory != null)
             {
-                Door door = GetComponent<Door>();
-                if (door != null)
+                if (playerInventory.HasItem(keyItemName))
                 {
-                    door.Unlock();
+                    Door door = GetComponent<Door>();
+                    if (door != null)
+                    {
+                        door.Unlock();
+                    }
                 }
             }
         }
@@ -27,7 +31,7 @@ public class DoorUnlock : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             isPlayerInRange = true;
-            playerKeyHolder = other.GetComponent<Key>();
+            playerInventory = other.GetComponent<PlayerInventory>();
         }
     }
 
@@ -36,7 +40,7 @@ public class DoorUnlock : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             isPlayerInRange = false;
-            playerKeyHolder = null;
+            playerInventory = null;
         }
     }
 }
