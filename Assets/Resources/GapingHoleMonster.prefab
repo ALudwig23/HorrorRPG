@@ -80,8 +80,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: -459612089
-  m_SortingLayer: 2
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 700686150, guid: 14fdc7b8cf0b53043b883e52c813b288, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -293,7 +293,7 @@ MonoBehaviour:
   _ghmHead: {fileID: 776724649850688600}
   _ghmLeftLeg: {fileID: 1209509371565803042}
   _ghmRightLeg: {fileID: 6841830880681053855}
-  _cursorMovement: {fileID: 0}
+  _canvas: {fileID: 0}
 --- !u!1 &1929395505546641575
 GameObject:
   m_ObjectHideFlags: 0
@@ -490,7 +490,7 @@ MonoBehaviour:
   _ghmHead: {fileID: 776724649850688600}
   _ghmBody: {fileID: 2277782593247675391}
   _ghmLeftLeg: {fileID: 1209509371565803042}
-  _cursorMovement: {fileID: 0}
+  _canvas: {fileID: 0}
 --- !u!1 &2038189747451983501
 GameObject:
   m_ObjectHideFlags: 0
@@ -787,4 +787,4 @@ MonoBehaviour:
   _ghmHead: {fileID: 776724649850688600}
   _ghmBody: {fileID: 2277782593247675391}
   _ghmRightLeg: {fileID: 6841830880681053855}
-  _cursorMovement: {fileID: 0}
+  _canvas: {fileID: 0}
