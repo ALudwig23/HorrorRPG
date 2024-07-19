@@ -29,6 +29,31 @@ public class PlayerInventory : MonoBehaviour
         }
         return false;
     }
+
+    public void RemoveItem(string itemName)
+    {
+        Item itemToRemove = null;
+        foreach (Item item in items)
+        {
+            if (item.itemName == itemName)
+            {
+                itemToRemove = item;
+                break;
+            }
+        }
+        if (itemToRemove != null)
+        {
+            items.Remove(itemToRemove);
+            Debug.Log("Item removed: " + itemName);
+
+            // Notify the UI to update
+            InventoryUI inventoryUI = FindObjectOfType<InventoryUI>();
+            if (inventoryUI != null && inventoryUI.gameObject.activeSelf)
+            {
+                inventoryUI.UpdateInventoryUI();
+            }
+        }
+    }
 }
 
 
