@@ -12,15 +12,13 @@ public class DoorUnlock : MonoBehaviour
     {
         if (isPlayerInRange && Input.GetKeyDown(KeyCode.E))
         {
-            if (playerInventory != null)
+            if (playerInventory != null && playerInventory.HasItem(keyItemName))
             {
-                if (playerInventory.HasItem(keyItemName))
+                Door door = GetComponent<Door>();
+                if (door != null)
                 {
-                    Door door = GetComponent<Door>();
-                    if (door != null)
-                    {
-                        door.Unlock();
-                    }
+                    door.Unlock();
+                    door.Open();
                 }
             }
         }
