@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GHM_RightLeg : MonoBehaviour
+public class BS_RightLeg : MonoBehaviour
 {
     private bool _targetingRightLeg = false;
     private bool _targetedRightLeg = false;
@@ -10,12 +10,14 @@ public class GHM_RightLeg : MonoBehaviour
     public bool TargetedRightLeg
     {
         get { return _targetedRightLeg; }
-        set { _targetedRightLeg = value;}
+        set { _targetedRightLeg = value; }
     }
 
-    [SerializeField] private GHM_Head _ghmHead;
-    [SerializeField] private GHM_Body _ghmBody;
-    [SerializeField] private GHM_LeftLeg _ghmLeftLeg;
+    [SerializeField] private BS_Head _bs_Head;
+    [SerializeField] private BS_Body _bs_Body;
+    [SerializeField] private BS_LeftClaw _bs_LeftClaw;
+    [SerializeField] private BS_RightClaw _bs_RightClaw;
+    [SerializeField] private BS_LeftLeg _bs_LeftLeg;
     [SerializeField] private Canvas _canvas;
     private CursorMovement _cursorMovement;
     private Transform _pointerTransform;
@@ -34,7 +36,7 @@ public class GHM_RightLeg : MonoBehaviour
             if (_cursorMovement.EnterPressed == true)
             {
                 Debug.Log("working");
-                if (_ghmHead.TargetedHead == false && _ghmBody.TargetedBody == false && _ghmLeftLeg.TargetedLeftLeg == false)
+                if (_bs_Head.TargetedHead == false && _bs_Body.TargetedBody == false && _bs_LeftClaw == false && _bs_RightClaw == false && _bs_LeftLeg == false)
                 {
                     Debug.Log("Attacked Right Leg");
                     _targetedRightLeg = true;
@@ -45,7 +47,7 @@ public class GHM_RightLeg : MonoBehaviour
                 }
                 else
                 {
-                    
+
                     _targetedRightLeg = false;
                 }
             }

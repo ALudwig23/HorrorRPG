@@ -81,10 +81,12 @@ public class BattleManager : MonoBehaviour
     [Header("Monster Type Reference")]
     [SerializeField] private GameObject _monsterPrefab1;
     [SerializeField] private GameObject _miniMonsterPrefab1;
+
     [SerializeField] private GameObject _gapingHoleMonster;
     [SerializeField] private GapingHoleMonster _gapingHoleMonsterScript;
 
-    [SerializeField] private SpiderMonster _spiderMonster;
+    [SerializeField] private GameObject _boneSpider;
+    [SerializeField] private BoneSpider _boneSpiderScript;
 
     void Start()
     {
@@ -149,9 +151,16 @@ public class BattleManager : MonoBehaviour
 
                 break;
 
-            case "SpiderMonster":
+            case "BoneSpider":
 
-                _monsterPrefab1 = Resources.Load<GameObject>("SpiderMonster");
+                _monsterPrefab1 = Resources.Load<GameObject>("BoneSpider");
+
+                _boneSpider = Instantiate(_monsterPrefab1);
+                _boneSpider.transform.SetParent(_mainDisplay.transform);
+                _boneSpider.transform.position = new Vector3(_mainDisplay.transform.position.x, _mainDisplay.transform.position.y + 1f, _mainDisplay.transform.position.z);
+
+                _boneSpiderScript = _boneSpider.GetComponent<BoneSpider>();
+                yield return new WaitForSeconds(0.1f);
 
                 break;
         }

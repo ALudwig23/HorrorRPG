@@ -424,8 +424,8 @@ MonoBehaviour:
   m_ShadowVolumeIntensityEnabled: 0
   m_ShadowVolumeIntensity: 0.75
   m_LocalBounds:
-    m_Center: {x: -0.61150026, y: -0.6006999, z: 0}
-    m_Extent: {x: 9.954, y: 6.0654, z: 0}
+    m_Center: {x: -0.61189985, y: -0.60070014, z: 0}
+    m_Extent: {x: 9.953501, y: 6.0643997, z: 0}
   m_PointLightInnerAngle: 360
   m_PointLightOuterAngle: 360
   m_PointLightInnerRadius: 0
@@ -1590,7 +1590,7 @@ MonoBehaviour:
   _miniMonsterPrefab1: {fileID: 0}
   _gapingHoleMonster: {fileID: 0}
   _gapingHoleMonsterScript: {fileID: 0}
-  _spiderMonster: {fileID: 0}
+  _boneSpider: {fileID: 0}
 --- !u!1 &891963379
 GameObject:
   m_ObjectHideFlags: 0

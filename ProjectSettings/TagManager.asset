@@ -10,6 +10,7 @@ TagManager:
   - AttackPointerCenter
   - InGameMenu
   - Key
+  - BoneSpider
   layers:
   - Default
   - TransparentFX

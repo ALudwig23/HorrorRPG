@@ -8,7 +8,7 @@ using UnityEngine.TextCore.Text;
 public class GapingHoleMonster : MonoBehaviour
 {
     private float _maxHealth = 500f;
-    private float _currentHealth = 200f;
+    private float _currentHealth = 500f;
     private float _headHealth = 50f;
     private float _bodyHealth = 100f;
     private float _leftLegHealth = 25f;
@@ -89,7 +89,7 @@ public class GapingHoleMonster : MonoBehaviour
     {
         get { return _monsterDied; }
     }
-
+    //================================================================
     public bool HeadTrigger
     {
         get { return _headTrigger; }
