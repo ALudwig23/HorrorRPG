@@ -114,6 +114,12 @@ public class BattleManager : MonoBehaviour
         //Debug.Log(EventSystem.current);
     }
 
+    private void DeactivateObject()
+    {
+        _pointer.SetActive(false);
+        _uiBackground.SetActive(false);
+    }
+
     private void CheckSanity()
     {
         if (_playerStats.CurrentSanity <= 75f)
@@ -191,20 +197,6 @@ public class BattleManager : MonoBehaviour
                 break;
 
             case BattleState.MonsterTurn:
-
-                _pointer.SetActive(false);
-                _uiBackground.SetActive(false);
-
-                //Wait for previous dialogue to finish
-                if (_attackMissed == false)
-                {
-                    yield return new WaitUntil(() => _gapingHoleMonsterScript.FinishedDialogue == true);
-                    _gapingHoleMonsterScript.FinishedDialogue = false;
-                }
-                else
-                {
-                    yield return new WaitUntil(() => _dialogueTypingManager.ToNextDialogue == true);
-                }
 
                 StartCoroutine(HandleMonsterTurn());
 
@@ -286,6 +278,40 @@ public class BattleManager : MonoBehaviour
                     }
 
                     break;
+
+                case "BoneSpider":
+
+                    StartCoroutine(_boneSpiderScript.OnDamage());
+                    yield return new WaitUntil(() => _boneSpiderScript.FinishedDialogue == true);
+
+                    _boneSpiderScript.FinishedDialogue = false;
+                    _boneSpiderScript.OnDeath();
+
+                    //End early if enemy or player dies
+                    if (_boneSpiderScript.MonsterDied == true || _playerStats.CurrentTotalHealth <= 0f)
+                    {
+                        _battleState = BattleState.BattleEnd;
+                        StartCoroutine(HandleState());
+                    }
+                    else
+                    {
+                        StartCoroutine(_boneSpiderScript.MovesetHandler());
+                        yield return new WaitUntil(() => _boneSpiderScript.DamageDealt == true);
+                        _playerHealth.text = $"Total HP: {(int)_playerStats.CurrentTotalHealth} / {(int)_playerStats.MaxTotalHealth}";
+                        _playerSanity.text = $"Sanity: {(int)_playerStats.CurrentSanity} / {(int)_playerStats.MaxSanity}";
+                        _boneSpiderScript.DamageDealt = false;
+                        yield return new WaitUntil(() => _boneSpiderScript.FinishedDialogue == true);
+
+                        _boneSpiderScript.FinishedDialogue = false;
+
+                        CheckSanity();
+
+                        Debug.Log("Finished State");
+                        _battleState = BattleState.PlayerTurn;
+                        StartCoroutine(HandleState());
+                    }
+
+                    break;
             }
         }
 
@@ -342,6 +368,11 @@ public class BattleManager : MonoBehaviour
 
                             _battleState = BattleState.MonsterTurn;
                             _attackMissed = false;
+
+                            DeactivateObject();
+                            yield return new WaitUntil(() => _gapingHoleMonsterScript.FinishedDialogue == true);
+                            _gapingHoleMonsterScript.FinishedDialogue = false;
+
                             StartCoroutine(HandleState());
                         }
                     }
@@ -361,6 +392,11 @@ public class BattleManager : MonoBehaviour
 
                             _battleState = BattleState.MonsterTurn;
                             _attackMissed = false;
+
+                            DeactivateObject();
+                            yield return new WaitUntil(() => _gapingHoleMonsterScript.FinishedDialogue == true);
+                            _gapingHoleMonsterScript.FinishedDialogue = false;
+
                             StartCoroutine(HandleState());
                         }
                     }
@@ -380,6 +416,11 @@ public class BattleManager : MonoBehaviour
 
                             _battleState = BattleState.MonsterTurn;
                             _attackMissed = false;
+
+                            DeactivateObject();
+                            yield return new WaitUntil(() => _gapingHoleMonsterScript.FinishedDialogue == true);
+                            _gapingHoleMonsterScript.FinishedDialogue = false;
+
                             StartCoroutine(HandleState());
                         }
                     }
@@ -399,6 +440,11 @@ public class BattleManager : MonoBehaviour
 
                             _battleState = BattleState.MonsterTurn;
                             _attackMissed = false;
+
+                            DeactivateObject();
+                            yield return new WaitUntil(() => _gapingHoleMonsterScript.FinishedDialogue == true);
+                            _gapingHoleMonsterScript.FinishedDialogue = false;
+
                             StartCoroutine(HandleState());
                         }
                     }
@@ -411,9 +457,178 @@ public class BattleManager : MonoBehaviour
 
                         _attackMissed = true;
                         _battleState = BattleState.MonsterTurn;
+
+                        DeactivateObject();
+                        yield return new WaitUntil(() => _dialogueTypingManager.ToNextDialogue == true);
+
                         StartCoroutine(HandleState());
                     }
 
+                    break;
+
+                //----------------------------------------------------------------------------------------------------------------
+                case "BoneSpider":
+
+                    
+                    if (_boneSpiderScript.HeadTrigger == true)
+                    {
+                        if (_boneSpiderScript.HeadHealth <= 0)
+                        {
+                            _dialogueTypingManager.StopDialogue();
+                            _text = "This part has already been destroyed";
+                            _dialogueTypingManager.StartDialogue(_text, _dialogueText);
+                        }
+                        else
+                        {
+                            Debug.Log("Bone Spider");
+                            _dialogueTypingManager.StopDialogue();
+                            StartCoroutine(_boneSpiderScript.HeadDamaged());
+
+                            _battleState = BattleState.MonsterTurn;
+                            _attackMissed = false;
+
+                            DeactivateObject();
+                            yield return new WaitUntil(() => _boneSpiderScript.FinishedDialogue == true);
+                            _boneSpiderScript.FinishedDialogue = false;
+
+                            StartCoroutine(HandleState());
+                        }
+                    }
+
+                    else if (_boneSpiderScript.BodyTrigger == true)
+                    {
+                        if (_boneSpiderScript.BodyHealth <= 0)
+                        {
+                            _dialogueTypingManager.StopDialogue();
+                            _text = "This part has already been destroyed";
+                            _dialogueTypingManager.StartDialogue(_text, _dialogueText);
+                        }
+                        else
+                        {
+                            _dialogueTypingManager.StopDialogue();
+                            StartCoroutine(_boneSpiderScript.BodyDamaged());
+
+                            _battleState = BattleState.MonsterTurn;
+                            _attackMissed = false;
+
+                            DeactivateObject();
+                            yield return new WaitUntil(() => _boneSpiderScript.FinishedDialogue == true);
+                            _boneSpiderScript.FinishedDialogue = false;
+
+                            StartCoroutine(HandleState());
+                        }
+                    }
+
+                    else if (_boneSpiderScript.LeftClawTrigger == true)
+                    {
+                        if (_boneSpiderScript.LeftClawHealth <= 0)
+                        {
+                            _dialogueTypingManager.StopDialogue();
+                            _text = "This part has already been destroyed";
+                            _dialogueTypingManager.StartDialogue(_text, _dialogueText);
+                        }
+                        else
+                        {
+                            _dialogueTypingManager.StopDialogue();
+                            StartCoroutine(_boneSpiderScript.LeftClawDamaged());
+
+                            _battleState = BattleState.MonsterTurn;
+                            _attackMissed = false;
+
+                            DeactivateObject();
+                            yield return new WaitUntil(() => _boneSpiderScript.FinishedDialogue == true);
+                            _boneSpiderScript.FinishedDialogue = false;
+
+                            StartCoroutine(HandleState());
+                        }
+                    }
+
+                    else if (_boneSpiderScript.RightClawTrigger == true)
+                    {
+                        if (_boneSpiderScript.RightClawHealth <= 0)
+                        {
+                            _dialogueTypingManager.StopDialogue();
+                            _text = "This part has already been destroyed";
+                            _dialogueTypingManager.StartDialogue(_text, _dialogueText);
+                        }
+                        else
+                        {
+                            _dialogueTypingManager.StopDialogue();
+                            StartCoroutine(_boneSpiderScript.RightClawDamaged());
+
+                            _battleState = BattleState.MonsterTurn;
+                            _attackMissed = false;
+
+                            DeactivateObject();
+                            yield return new WaitUntil(() => _boneSpiderScript.FinishedDialogue == true);
+                            _boneSpiderScript.FinishedDialogue = false;
+
+                            StartCoroutine(HandleState());
+                        }
+                    }
+
+                    else if (_boneSpiderScript.LeftLegTrigger == true)
+                    {
+                        if (_boneSpiderScript.LeftLegHealth <= 0)
+                        {
+                            _dialogueTypingManager.StopDialogue();
+                            _text = "This part has already been destroyed";
+                            _dialogueTypingManager.StartDialogue(_text, _dialogueText);
+                        }
+                        else
+                        {
+                            _dialogueTypingManager.StopDialogue();
+                            StartCoroutine(_boneSpiderScript.LeftLegDamaged());
+
+                            _battleState = BattleState.MonsterTurn;
+                            _attackMissed = false;
+
+                            DeactivateObject();
+                            yield return new WaitUntil(() => _boneSpiderScript.FinishedDialogue == true);
+                            _boneSpiderScript.FinishedDialogue = false;
+
+                            StartCoroutine(HandleState());
+                        }
+                    }
+
+                    else if (_boneSpiderScript.RightLegTrigger == true)
+                    {
+                        if (_boneSpiderScript.RightLegHealth <= 0)
+                        {
+                            _dialogueTypingManager.StopDialogue();
+                            _text = "This part has already been destroyed";
+                            _dialogueTypingManager.StartDialogue(_text, _dialogueText);
+                        }
+                        else
+                        {
+                            _dialogueTypingManager.StopDialogue();
+                            StartCoroutine(_boneSpiderScript.RightLegDamaged());
+
+                            _battleState = BattleState.MonsterTurn;
+                            _attackMissed = false;
+
+                            DeactivateObject();
+                            yield return new WaitUntil(() => _boneSpiderScript.FinishedDialogue == true);
+                            _boneSpiderScript.FinishedDialogue = false;
+
+                            StartCoroutine(HandleState());
+                        }
+                    }
+
+                    else
+                    {
+                        _dialogueTypingManager.StopDialogue();
+                        _text = "Your attack missed...";
+                        _dialogueTypingManager.StartDialogue(_text, _dialogueText);
+
+                        _attackMissed = true;
+                        _battleState = BattleState.MonsterTurn;
+
+                        DeactivateObject();
+                        yield return new WaitUntil(() => _dialogueTypingManager.ToNextDialogue == true);
+
+                        StartCoroutine(HandleState());
+                    }
                     break;
             }
         }

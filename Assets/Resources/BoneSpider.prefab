@@ -358,6 +358,7 @@ GameObject:
   m_Component:
   - component: {fileID: 711012223035509223}
   - component: {fileID: 4455680685779276152}
+  - component: {fileID: 725075430720793276}
   m_Layer: 0
   m_Name: BoneSpider
   m_TagString: Untagged
@@ -438,6 +439,33 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &725075430720793276
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1595531312082696905}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 07a8afe07dc2dfc409068beae23c7cde, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _bs_Head: {fileID: 1931617580187141354}
+  _bs_Body: {fileID: 692685177676906050}
+  _bs_LeftClaw: {fileID: 3270999809127427756}
+  _bs_RightClaw: {fileID: 2148488256832644473}
+  _bs_LeftLeg: {fileID: 3644165848260995384}
+  _bs_RightLeg: {fileID: 1318150749621771330}
+  _dialogueBox: {fileID: 0}
+  _fontAsset: {fileID: 11400000, guid: 0986cff18c849434dab1b9782a299882, type: 2}
+  _dialogueText: {fileID: 0}
+  _playerStats: {fileID: 11400000, guid: 08d500c0ef2c0ac4f95c63e9f7d52c55, type: 2}
+  _dialogueTypingManager:
+    _typingSpeed: 0.04
+    _timeBetweenDialogue: 0.5
+    _toNextDialogue: 0
+    _dialogueText: {fileID: 0}
 --- !u!1 &5088774128032692310
 GameObject:
   m_ObjectHideFlags: 0
