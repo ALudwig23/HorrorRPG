@@ -24,6 +24,7 @@ public class DialogueTypingManager
     {
         if (_coroutine != null)
         {
+            Debug.Log("Stopped current dialogue coroutine");
             CoroutineHost.Instance.StopCoroutine(_coroutine);
         }
 
@@ -35,6 +36,7 @@ public class DialogueTypingManager
     {
         if (_coroutine != null)
         {
+            Debug.Log("Stopped dialogue coroutine");
             CoroutineHost.Instance.StopCoroutine(_coroutine);
         }
 

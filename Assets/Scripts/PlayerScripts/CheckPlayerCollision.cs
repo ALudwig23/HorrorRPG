@@ -23,12 +23,11 @@ public class CheckPlayerCollision : MonoBehaviour
         {
             _collidedMonsterType = "GapingHoleMonster";
             _collidedWithMonster = true;
-            Debug.Log($"Collided with monster {CollidedWithMonster}");
         }
 
-        if (collision.gameObject.CompareTag("Monster2"))
+        if (collision.gameObject.CompareTag("BoneSpider"))
         {
-            _collidedMonsterType = "Monster2";
+            _collidedMonsterType = "BoneSpider";
             _collidedWithMonster = true;
         }
 
@@ -38,25 +37,29 @@ public class CheckPlayerCollision : MonoBehaviour
             _collidedWithMonster = true;
         }
 
+        Debug.Log($"Collided with monster {CollidedWithMonster}");
+        
         //if (collision.gameObject.CompareTag("Button"))
         //{
         //    _collidedMonsterType = "Button";
         //    _collidedWithMonster = true;
         //    Debug.Log("Collided with button");
         //}
+        
+
     }
 
     private void OnCollisionExit2D(Collision2D collision)
     {
         //Reset values after scene change
-        if (collision.gameObject.CompareTag("Monster1"))
+        if (collision.gameObject.CompareTag("GapingHoleMonster"))
         {
             _collidedMonsterType = "none";
             _collidedWithMonster = false;
-            Debug.Log($"Still colliding with monster {CollidedWithMonster}");
+            Debug.Log($"No longer colliding with monster {CollidedWithMonster}");
         }
 
-        if (collision.gameObject.CompareTag("Monster2"))
+        if (collision.gameObject.CompareTag("BoneSpider"))
         {
             _collidedMonsterType = "none";
             _collidedWithMonster = false;

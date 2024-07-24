@@ -17,11 +17,15 @@ public class GHM_LeftLeg : MonoBehaviour
     [SerializeField] private GHM_Head _ghmHead;
     [SerializeField] private GHM_Body _ghmBody;
     [SerializeField] private GHM_RightLeg _ghmRightLeg;
-    [SerializeField] private CursorMovement _cursorMovement;
+    [SerializeField] private Canvas _canvas;
+    private CursorMovement _cursorMovement;
+    private Transform _pointerTransform;
 
     private void Start()
     {
-        _cursorMovement = FindObjectOfType<CursorMovement>();
+        _canvas = FindObjectOfType<Canvas>();
+        _pointerTransform = _canvas.transform.Find("Pointer");
+        _cursorMovement = _pointerTransform.GetComponent<CursorMovement>();
     }
 
     private void Update()
@@ -32,7 +36,7 @@ public class GHM_LeftLeg : MonoBehaviour
             {
                 if (_ghmHead.TargetedHead == false && _ghmBody.TargetedBody == false && _ghmRightLeg.TargetedRightLeg == false)
                 {
-                    Debug.Log("Attacked Head");
+                    Debug.Log("Attacked Left Leg");
                     _targetedLeftLeg = true;
                 }
                 else if (_prioritizedLeftLeg == true)
@@ -69,11 +73,13 @@ public class GHM_LeftLeg : MonoBehaviour
         {
             Debug.Log("No Longer On Left Leg");
             _targetingLeftLeg = false;
+            _targetedLeftLeg = false;
         }
         if (collision.CompareTag("AttackPointerCenter"))
         {
             Debug.Log("No Longer Prioritizing Left Leg");
             _targetingLeftLeg = false;
+            _targetedLeftLeg = false;
             _prioritizedLeftLeg = false;
         }
     }

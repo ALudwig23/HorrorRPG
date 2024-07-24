@@ -8,7 +8,7 @@ using UnityEngine.TextCore.Text;
 public class GapingHoleMonster : MonoBehaviour
 {
     private float _maxHealth = 500f;
-    private float _currentHealth = 200f;
+    private float _currentHealth = 500f;
     private float _headHealth = 50f;
     private float _bodyHealth = 100f;
     private float _leftLegHealth = 25f;
@@ -44,7 +44,6 @@ public class GapingHoleMonster : MonoBehaviour
     [SerializeField] private GameObject _dialogueBox;
 
     [SerializeField] private TMP_FontAsset _fontAsset;
-    [SerializeField] private Sprite _buttonSprite;
     [SerializeField] private TMP_Text _dialogueText;
 
     [SerializeField] private Coroutine _dialogueCoroutine;
@@ -89,7 +88,7 @@ public class GapingHoleMonster : MonoBehaviour
     {
         get { return _monsterDied; }
     }
-
+    //================================================================
     public bool HeadTrigger
     {
         get { return _headTrigger; }
@@ -120,8 +119,6 @@ public class GapingHoleMonster : MonoBehaviour
 
     private void Start()
     {
-        
-
         _dialogueBox = GameObject.Find("DialogueBox");
         _dialogueText = _dialogueBox.GetComponentInChildren<TextMeshProUGUI>();
     }
@@ -263,11 +260,10 @@ public class GapingHoleMonster : MonoBehaviour
 
         switch (_movesRandomizer)
         {
-            //Screech attack
+            //Screech
             case 0:
                 Debug.Log("Screech");
                 _playerStats.CurrentSanity -= _sanityDamage;
-                Debug.Log("Damaged");
 
                 _text = $"The creature makes a disturbing noise";
                 _damageDealt = true;
@@ -280,11 +276,11 @@ public class GapingHoleMonster : MonoBehaviour
                 _finishedDialogue = true;
                 break;
 
+            //Lunge
             case 1:
 
                 Debug.Log("Lunge");
                 _playerStats.CurrentTotalHealth -= _damage * ( 100 / (100 + _playerStats.BaseDefence));
-                Debug.Log("Damaged");
 
                 _text = $"The creature lunges towards you";
                 _damageDealt = true;
