@@ -80,8 +80,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: -459612089
-  m_SortingLayer: 2
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 700686150, guid: 14fdc7b8cf0b53043b883e52c813b288, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -133,7 +133,6 @@ MonoBehaviour:
   _ghmRightLeg: {fileID: 6841830880681053855}
   _dialogueBox: {fileID: 0}
   _fontAsset: {fileID: 11400000, guid: 0986cff18c849434dab1b9782a299882, type: 2}
-  _buttonSprite: {fileID: -5877817536159294332, guid: f2e4e41b1c3a48c4e96da7ff9d352857, type: 3}
   _dialogueText: {fileID: 0}
   _playerStats: {fileID: 11400000, guid: 08d500c0ef2c0ac4f95c63e9f7d52c55, type: 2}
   _dialogueTypingManager:
