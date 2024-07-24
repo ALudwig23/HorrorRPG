@@ -3,7 +3,6 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-
   tags:
   - GapingHoleMonster
   - PauseTrigger
@@ -11,8 +10,6 @@ TagManager:
   - AttackPointerCenter
   - InGameMenu
   - Key
-  - BoneSpider
-
   - Box
   layers:
   - Default
@@ -48,12 +45,17 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: Background
+    uniqueID: 3744528645
+    locked: 0
   - name: Default
     uniqueID: 0
     locked: 0
-
   - name: Player
     uniqueID: 993837085
+    locked: 0
+  - name: Foreground
+    uniqueID: 4191772627
     locked: 0
   - name: Monster
     uniqueID: 3835355207
@@ -61,7 +63,3 @@ TagManager:
   - name: Object
     uniqueID: 761116891
     locked: 0
-  - name: Pointer
-    uniqueID: 2180461015
-    locked: 0
-
