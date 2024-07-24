@@ -37,6 +37,13 @@ public class CheckPlayerCollision : MonoBehaviour
             _collidedMonsterType = "Monster3";
             _collidedWithMonster = true;
         }
+
+        //if (collision.gameObject.CompareTag("Button"))
+        //{
+        //    _collidedMonsterType = "Button";
+        //    _collidedWithMonster = true;
+        //    Debug.Log("Collided with button");
+        //}
     }
 
     private void OnCollisionExit2D(Collision2D collision)
@@ -60,5 +67,11 @@ public class CheckPlayerCollision : MonoBehaviour
             _collidedMonsterType = "none";
             _collidedWithMonster = false;
         }
+
+        //if (collision.gameObject.CompareTag("Button"))
+        //{
+        //    _collidedMonsterType = "none";
+        //    _collidedWithMonster = false;
+        //}
     }
 }
