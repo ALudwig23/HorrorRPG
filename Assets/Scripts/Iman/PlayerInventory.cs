@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class PlayerInventory : MonoBehaviour
 {
+    //TEMPORARY INVENTORY WILL NOT WORK LATER ON
     public List<Item> items = new List<Item>();
 
     public void AddItem(Item item)
