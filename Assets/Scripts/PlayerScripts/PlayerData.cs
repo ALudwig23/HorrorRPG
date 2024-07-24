@@ -19,6 +19,12 @@ public class PlayerData
 
     //Player Current Status
     [SerializeField] private float _currentTotalHealth;
+    [SerializeField] private float _currentHeadHealth;
+    [SerializeField] private float _currentBodyHealth;
+    [SerializeField] private float _currentLeftArmHealth;
+    [SerializeField] private float _currentRightArmHealth;
+    [SerializeField] private float _currentLeftLegHealth;
+    [SerializeField] private float _currentRightLegHealth;
     [SerializeField] private float _currentSanity;
     [SerializeField] private float[] _currentPosition;
 
@@ -58,10 +64,6 @@ public class PlayerData
     {
         get { return _maxSanity; }
     }
-    public float CurrentSanity
-    {
-        get { return _currentSanity; }
-    }
     public float BaseDamage
     {
         get { return _baseDamage; }
@@ -70,6 +72,41 @@ public class PlayerData
     public float CurrentTotalHealth
     {
         get { return _currentTotalHealth; }
+    }
+    public float CurrentHeadHealth
+    {
+        get { return _currentHeadHealth; }
+        set { _currentHeadHealth = value; }
+    }
+    public float CurrentBodyHealth
+    {
+        get { return _currentBodyHealth; }
+        set { _currentBodyHealth = value; }
+    }
+    public float CurrentLeftArmHealth
+    {
+        get { return _currentLeftArmHealth; }
+        set { _currentLeftArmHealth = value; }
+    }
+    public float CurrentRightArmHealth
+    {
+        get { return _currentRightArmHealth; }
+        set { _currentRightArmHealth = value; }
+    }
+    public float CurrentLeftLegHealth
+    {
+        get { return _currentLeftLegHealth; }
+        set { _currentLeftLegHealth = value; }
+    }
+    public float CurrentRightLegHealth
+    {
+        get { return _currentRightLegHealth; }
+        set { _currentRightLegHealth = value; }
+    }
+    public float CurrentSanity
+    {
+        get { return _currentSanity; }
+        set { _currentSanity = value; }
     }
 
     public PlayerData(PlayerStats playerStats)
