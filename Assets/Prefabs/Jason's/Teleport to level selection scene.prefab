@@ -143,3 +143,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c78baa6b77c547f42aea2a9e1c7519b5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _loadScene: 3
+  _isTeleporting: 0

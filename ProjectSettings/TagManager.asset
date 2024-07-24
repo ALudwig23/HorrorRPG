@@ -3,6 +3,7 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
+
   tags:
   - GapingHoleMonster
   - PauseTrigger
@@ -11,6 +12,7 @@ TagManager:
   - InGameMenu
   - Key
   - BoneSpider
+
   layers:
   - Default
   - TransparentFX
@@ -45,12 +47,10 @@ TagManager:
   - 
   - 
   m_SortingLayers:
-  - name: Background
-    uniqueID: 3744528645
-    locked: 0
   - name: Default
     uniqueID: 0
     locked: 0
+
   - name: Player
     uniqueID: 993837085
     locked: 0
@@ -63,3 +63,4 @@ TagManager:
   - name: Pointer
     uniqueID: 2180461015
     locked: 0
+
