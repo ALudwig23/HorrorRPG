@@ -160,7 +160,7 @@ public class GapingHoleMonster : MonoBehaviour
     public IEnumerator BodyDamaged()
     {
         _bodyHealth -= _playerStats.BaseDamage;
-        _currentHealth -= _playerStats.BaseDamage;
+        _currentHealth = 0f;
 
         _text = $"The creature's body takes damage";
         _dialogueTypingManager.StartDialogue(_text, _dialogueText);

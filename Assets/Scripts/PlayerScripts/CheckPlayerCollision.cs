@@ -15,6 +15,15 @@ public class CheckPlayerCollision : MonoBehaviour
         get { return _collidedMonsterType; }
     }
 
+    private Vector2 _playerPosition;
+    private Transform _playerTransform;
+    private GameManager _gameManager;
+
+    private void Start()
+    {
+        _playerTransform = GetComponent<Transform>();
+        _gameManager = FindObjectOfType<GameManager>();
+    }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
@@ -31,11 +40,8 @@ public class CheckPlayerCollision : MonoBehaviour
             _collidedWithMonster = true;
         }
 
-        if (collision.gameObject.CompareTag("Monster3"))
-        {
-            _collidedMonsterType = "Monster3";
-            _collidedWithMonster = true;
-        }
+        _playerPosition = collision.transform.position;
+        _gameManager.PlayerPreviousPosition = _playerPosition;
 
         Debug.Log($"Collided with monster {CollidedWithMonster}");
         
