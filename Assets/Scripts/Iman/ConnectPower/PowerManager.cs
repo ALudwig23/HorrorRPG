@@ -7,6 +7,7 @@ public class PowerManager : MonoBehaviour
 {
     public GameObject CableHolder;
     public GameObject[] Cables;
+    public Door door; // Reference to the door script
 
     [SerializeField]
     private int totalCables = 0;
@@ -70,7 +71,9 @@ public class PowerManager : MonoBehaviour
     private void CompletePuzzle()
     {
         Debug.Log("Puzzle completed! Loading next scene...");
-        SceneManager.LoadScene("TutorialLevel"); // Replace with the name of your next scene
+        GameState.isPuzzleCompleted = true;
+        SceneManager.LoadScene("TutorialLevel"); // Go back to the tutorial level
     }
 }
+
 

@@ -5,9 +5,9 @@ using UnityEngine.UI;
 
 public class InventoryUI : MonoBehaviour
 {
-    public GameObject inventoryPanel; // Panel containing the inventory UI
-    public GameObject itemSlotPrefab; // Prefab for the item slots
-    public Transform itemSlotContainer; // Container for the item slots
+    public GameObject inventoryPanel; 
+    public GameObject itemSlotPrefab; 
+    public Transform itemSlotContainer; 
 
     private PlayerInventory playerInventory;
     private bool isInventoryOpen = false;

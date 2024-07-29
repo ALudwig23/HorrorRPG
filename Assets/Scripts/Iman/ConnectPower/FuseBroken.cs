@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -12,6 +11,7 @@ public class FuseBroken : MonoBehaviour
     public Button yesButton;          // Reference to the Yes button
     public Button noButton;           // Reference to the No button
     private bool isPlayerInRange = false;
+    private PlayerMovement playerMovement; // Reference to the player's movement script
 
     private void Start()
     {
@@ -23,13 +23,23 @@ public class FuseBroken : MonoBehaviour
         // Add listeners to the buttons
         yesButton.onClick.AddListener(OnYesButtonClicked);
         noButton.onClick.AddListener(OnNoButtonClicked);
+
+        // Find the player's movement script
+        playerMovement = FindObjectOfType<PlayerMovement>();
     }
 
     private void Update()
     {
         if (isPlayerInRange && Input.GetKeyDown(KeyCode.E))
         {
-            ShowFixPrompt();
+            if (GameState.isPuzzleCompleted)
+            {
+                ShowAlreadyFixedMessage();
+            }
+            else
+            {
+                ShowFixPrompt();
+            }
         }
     }
 
@@ -55,7 +65,32 @@ public class FuseBroken : MonoBehaviour
         {
             dialogueBox.SetActive(true);
             messageText.text = "You wanna fix it?";
+            yesButton.gameObject.SetActive(true);
+            noButton.gameObject.SetActive(true);
+            DisablePlayerMovement();
         }
+    }
+
+    private void ShowAlreadyFixedMessage()
+    {
+        if (dialogueBox != null && messageText != null)
+        {
+            dialogueBox.SetActive(true);
+            messageText.text = "Already fixed.";
+            yesButton.gameObject.SetActive(false); // Hide the Yes button
+            noButton.gameObject.SetActive(false);   // Hide the No button
+            StartCoroutine(HideMessageAfterDelay(2f));
+        }
+    }
+
+    private IEnumerator HideMessageAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        if (dialogueBox != null)
+        {
+            dialogueBox.SetActive(false);
+        }
+        EnablePlayerMovement();
     }
 
     private void OnYesButtonClicked()
@@ -70,6 +105,23 @@ public class FuseBroken : MonoBehaviour
         if (dialogueBox != null)
         {
             dialogueBox.SetActive(false);
+        }
+        EnablePlayerMovement();
+    }
+
+    private void DisablePlayerMovement()
+    {
+        if (playerMovement != null)
+        {
+            playerMovement.enabled = false;
+        }
+    }
+
+    private void EnablePlayerMovement()
+    {
+        if (playerMovement != null)
+        {
+            playerMovement.enabled = true;
         }
     }
 }

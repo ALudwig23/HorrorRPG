@@ -1,12 +1,14 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
     public TMP_Text messageText;       // Reference to the TextMeshPro Text UI element
     public GameObject dialogueBox;     // Reference to the dialogue box panel
+    public Button yesButton;           // Reference to the Yes button
+    public Button noButton;            // Reference to the No button
     public TypewriterEffect typewriterEffect; // Reference to the TypewriterEffect script
 
     void Start()
@@ -25,6 +27,10 @@ public class UIManager : MonoBehaviour
         {
             typewriterEffect = GetComponent<TypewriterEffect>();
         }
+
+        // Hide buttons initially
+        if (yesButton != null) yesButton.gameObject.SetActive(false);
+        if (noButton != null) noButton.gameObject.SetActive(false);
     }
 
     public void ShowMessage(string message, float duration)
@@ -50,6 +56,8 @@ public class UIManager : MonoBehaviour
         {
             dialogueBox.SetActive(true);
             messageText.text = prompt;
+            yesButton.gameObject.SetActive(true); // Show the Yes button
+            noButton.gameObject.SetActive(true);  // Show the No button
         }
     }
 
@@ -59,5 +67,11 @@ public class UIManager : MonoBehaviour
         {
             dialogueBox.SetActive(false);
         }
+    }
+
+    public void HideButtons()
+    {
+        yesButton.gameObject.SetActive(false);
+        noButton.gameObject.SetActive(false);
     }
 }
