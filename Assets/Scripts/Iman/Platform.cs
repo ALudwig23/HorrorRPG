@@ -62,7 +62,7 @@ public class Platform : MonoBehaviour
                             ShowMessage("You've interacted here a few times!", 2f);
                             break;
                         case 6:
-                            ShowMessage("Still here? You’ve dimwit!", 2f);
+                            ShowMessage("Still here?", 2f);
                             break;
                         default:
                             ShowMessage("Boo!", 2f);
