@@ -12,6 +12,9 @@ TagManager:
   - Key
   - Box
   - BoneSpider
+  - torclight
+  - light
+  - Torchlight
   layers:
   - Default
   - TransparentFX
