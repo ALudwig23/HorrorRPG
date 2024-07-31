@@ -13,14 +13,12 @@ public class LanternController : MonoBehaviour
     public KeyCode toggleLightKey = KeyCode.L; // Key to toggle lantern lights
 
     private bool isPickedUp = false;
-    private bool lightsOn = true; // Initial state of lights
-    private bool lastLightsState = true; // Track last lights state
     private Light2D light2D;
 
     void Start()
     {
         popupText.SetActive(false); // Hide the popup text at the start
-        light2D = GetComponentInChildren<Light2D>(); // Get the Light2D component (assuming it's a child)
+        InitializeLight2DComponent();
     }
 
     void Update()
@@ -71,10 +69,17 @@ public class LanternController : MonoBehaviour
         popupText.SetActive(false); // Hide the popup text after picking up
 
         // Set lights state when picked up
-        lightsOn = lastLightsState;
-        UpdateLightState();
-        TorchlightState.instance.SetTorchlightState(true); // Update torchlight state to on
-        Debug.Log("Lantern picked up. Lights " + (lightsOn ? "on" : "off") + ".");
+        bool currentState = TorchlightState.instance.GetTorchlightState();
+        if (light2D != null)
+        {
+            UpdateLightState(currentState);
+        }
+        else
+        {
+            Debug.LogError("Light2D component is missing when picking up the lantern!");
+        }
+
+        Debug.Log("Lantern picked up. Lights " + (currentState ? "on" : "off") + ".");
     }
 
     void DropLantern()
@@ -84,27 +89,67 @@ public class LanternController : MonoBehaviour
         isPickedUp = false;
         gameObject.SetActive(true); // Ensure the lantern is visible when dropped
 
-        // Store current lights state before dropping
-        lastLightsState = lightsOn;
-
         // Reset lights state when dropped
-        UpdateLightState();
-        TorchlightState.instance.SetTorchlightState(false); // Update torchlight state to off
-        Debug.Log("Lantern dropped. Lights " + (lightsOn ? "on" : "off") + ".");
+        bool currentState = TorchlightState.instance.GetTorchlightState();
+        if (light2D != null)
+        {
+            UpdateLightState(currentState);
+        }
+        else
+        {
+            Debug.LogError("Light2D component is missing when dropping the lantern!");
+        }
+
+        Debug.Log("Lantern dropped. Lights " + (currentState ? "on" : "off") + ".");
     }
 
     void ToggleLanternLights()
     {
-        lightsOn = !lightsOn; // Toggle the lights state
-        UpdateLightState();
-        Debug.Log("Lantern lights " + (lightsOn ? "on" : "off") + ".");
+        // Re-initialize light2D if it's null
+        if (light2D == null)
+        {
+            InitializeLight2DComponent();
+        }
+
+        if (light2D != null)
+        {
+            bool currentState = !TorchlightState.instance.GetTorchlightState(); // Toggle the current state
+            TorchlightState.instance.SetTorchlightState(currentState); // Update the torchlight state
+            UpdateLightState(currentState); // Update the light state in the Light2D component
+
+            Debug.Log("Lantern lights toggled. Now " + (currentState ? "on" : "off") + ".");
+        }
+        else
+        {
+            Debug.LogError("Light2D component is missing when toggling the lights!");
+        }
     }
 
-    void UpdateLightState()
+    void UpdateLightState(bool state)
     {
         if (light2D != null)
         {
-            light2D.enabled = lightsOn; // Enable or disable the Light2D component based on lightsOn
+            light2D.enabled = state; // Enable or disable the Light2D component based on the state
+            Debug.Log("UpdateLightState called. Lights " + (state ? "on" : "off") + ".");
+        }
+        else
+        {
+            Debug.LogError("Light2D component is missing in UpdateLightState.");
+        }
+    }
+
+    void InitializeLight2DComponent()
+    {
+        light2D = GetComponentInChildren<Light2D>();
+        if (light2D != null)
+        {
+            Debug.Log("Light2D component found in InitializeLight2DComponent.");
+            light2D.enabled = TorchlightState.instance.GetTorchlightState(); // Set initial light state based on TorchlightState
+            Debug.Log("Light initialized: " + (light2D.enabled ? "on" : "off"));
+        }
+        else
+        {
+            Debug.LogError("Light2D component not found in InitializeLight2DComponent!");
         }
     }
 }
