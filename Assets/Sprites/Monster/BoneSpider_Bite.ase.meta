@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: e53c154f93918d7418f8c0a2e1dbdf7a
+guid: c64edb368ffa88743a0eae11b4efbccd
 ScriptedImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -95,7 +95,7 @@ ScriptedImporter:
     addSortingGroup: 1
     addShadowCasters: 0
   importFileNodeState: 1
-  platformSettingsDirtyTick: 638538849545454551
+  platformSettingsDirtyTick: 638581126412827424
   textureAssetName: 
   singleSpriteImportData:
   - name: 
@@ -119,18 +119,18 @@ ScriptedImporter:
     tessellationDetail: 0
     uvTransform: {x: 0, y: 0}
   animatedSpriteImportData:
-  - name: Scissors
+  - name: BoneSpider_Bite_Frame_0
     originalName: 
-    pivot: {x: 0.5116279, y: -0.116279066}
+    pivot: {x: 0.5, y: -0.30769232}
     alignment: 9
     border: {x: 0, y: 0, z: 0, w: 0}
     rect:
       serializedVersion: 2
       x: 4
       y: 4
-      width: 43
-      height: 43
-    spriteID: 0cbbada4811221f4bb1767c0ec20319e
+      width: 62
+      height: 39
+    spriteID: 076d91def34261347853a814afd31f35
     spriteBone: []
     spriteOutline: []
     vertices: []
@@ -139,23 +139,135 @@ ScriptedImporter:
     edges: []
     tessellationDetail: 0
     uvTransform: {x: 4, y: 4}
+  - name: BoneSpider_Bite_Frame_1
+    originalName: 
+    pivot: {x: 0.5, y: -0.30769232}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 4
+      y: 51
+      width: 62
+      height: 39
+    spriteID: b2bce3613e8620a43b53b832ef5b37ce
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 4, y: 51}
+  - name: BoneSpider_Bite_Frame_2
+    originalName: 
+    pivot: {x: 0.5, y: -0.30769232}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 4
+      y: 98
+      width: 62
+      height: 39
+    spriteID: bfc00e863d37e7741a0774ecdb2b9307
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 4, y: 98}
+  - name: BoneSpider_Bite_Frame_3
+    originalName: 
+    pivot: {x: 0.5, y: -0.30769232}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 4
+      y: 145
+      width: 62
+      height: 39
+    spriteID: 1b9e15b1e2f20a64dad6d92e38697fb9
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 4, y: 145}
+  - name: BoneSpider_Bite_Frame_4
+    originalName: 
+    pivot: {x: 0.5, y: -0.30769232}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 4
+      y: 192
+      width: 62
+      height: 39
+    spriteID: dee76952c695ccf42bfb2661d9b3bcbe
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 4, y: 192}
   spriteSheetImportData: []
   asepriteLayers:
   - layerIndex: 0
-    guid: -613933041
-    name: Scissors
+    guid: -1487694272
+    name: BoneSpider_Bite
     layerFlags: 0
     layerType: 0
     blendMode: 0
     cells:
-    - name: Scissors
+    - name: BoneSpider_Bite_Frame_0
       frameIndex: 0
       cellRect:
-        x: 3
-        y: 5
-        width: 43
-        height: 43
-      spriteId: 0cbbada4811221f4bb1767c0ec20319e
+        x: 1
+        y: 12
+        width: 62
+        height: 39
+      spriteId: 076d91def34261347853a814afd31f35
+    - name: BoneSpider_Bite_Frame_1
+      frameIndex: 1
+      cellRect:
+        x: 1
+        y: 12
+        width: 62
+        height: 39
+      spriteId: b2bce3613e8620a43b53b832ef5b37ce
+    - name: BoneSpider_Bite_Frame_2
+      frameIndex: 2
+      cellRect:
+        x: 1
+        y: 12
+        width: 62
+        height: 39
+      spriteId: bfc00e863d37e7741a0774ecdb2b9307
+    - name: BoneSpider_Bite_Frame_3
+      frameIndex: 3
+      cellRect:
+        x: 1
+        y: 12
+        width: 62
+        height: 39
+      spriteId: 1b9e15b1e2f20a64dad6d92e38697fb9
+    - name: BoneSpider_Bite_Frame_4
+      frameIndex: 4
+      cellRect:
+        x: 1
+        y: 12
+        width: 62
+        height: 39
+      spriteId: dee76952c695ccf42bfb2661d9b3bcbe
     linkedCells: []
     parentIndex: -1
   platformSettings:
@@ -197,4 +309,4 @@ ScriptedImporter:
     androidETC2FallbackOverride: 0
   secondarySpriteTextures: []
   spritePackingTag: 
-  canvasSize: {x: 50, y: 50}
+  canvasSize: {x: 64, y: 64}
