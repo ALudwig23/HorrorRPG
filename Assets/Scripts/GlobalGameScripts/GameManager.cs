@@ -11,10 +11,19 @@ public class GameManager : MonoBehaviour
     private float _waitTime = 0.5f;
     private string _collidedMonsterType;
 
+    [SerializeField] private GameObject _playerObject;
+    private Vector2 _playerPreviousPosition;
+
     public string CollidedMonsterType
     {
         get { return _collidedMonsterType; }
     }
+
+    public Vector2 PlayerPreviousPosition
+    {
+        get { return _playerPreviousPosition; }
+        set { _playerPreviousPosition = value; }
+    } 
 
     [SerializeField] private Canvas _canvas;
     [SerializeField] private GameObject _inGameMenu;
@@ -22,6 +31,7 @@ public class GameManager : MonoBehaviour
     //Scripts reference
     [SerializeField] private CheckPlayerCollision _checkPlayerCollision;
     [SerializeField] private TeleportTrigger _teleportTrigger;
+    [SerializeField] private EnemyMovement _enemyMovement;
     [SerializeField] private PlayerMovement _playerMovement;
     [SerializeField] private BattleManager _battleManager;
     [SerializeField] private PlayerStats _playerStats;
@@ -115,6 +125,10 @@ public class GameManager : MonoBehaviour
         if (_battleManager.BattleWon == true)
         {
             SceneManager.LoadScene(Instance._currentRoomScene);
+
+            _playerObject = GameObject.FindWithTag("Player");
+            Debug.Log(_playerObject);
+            _playerObject.transform.position = _playerPreviousPosition;
         }
 
     }
@@ -174,6 +188,6 @@ public class GameManager : MonoBehaviour
 
     public void LoadGameState()
     {
-
+        SaveData.LoadPlayerStats();
     }
 }
