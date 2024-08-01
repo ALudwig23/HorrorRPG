@@ -49,6 +49,13 @@ public class Door : MonoBehaviour
     {
         return isOpen;
     }
+
+    // Check if the door is currently unlocked
+    public bool IsUnlocked()
+    {
+        return isUnlocked;
+    }
 }
+
 
 
