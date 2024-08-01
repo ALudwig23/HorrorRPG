@@ -25,6 +25,12 @@ public class SoundManager : MonoBehaviour
     }
     public void PlayMusic(string name)
     {
+        if (musicSource.isPlaying)
+        {
+            Debug.Log("should stop playing music ");    
+            musicSource.Stop();
+        }
+
         Sound s = Array.Find(musicSounds, x => x.name == name);
 
         if (s == null)
@@ -38,6 +44,18 @@ public class SoundManager : MonoBehaviour
         }
     }
 
+    public void StopMusic()
+    {
+        Debug.Log("stop playing musics");
+        //musicSource.Pause();
+        //musicSource.Stop();
+        musicSource.clip = null;
+        musicSource.Stop();
+
+        Debug.Log(musicSource.isPlaying);
+
+    }
+
     public void PlaySFX(string name)
     { 
         Sound s = Array.Find(sfxSounds, x => x.name == name);
@@ -45,10 +63,14 @@ public class SoundManager : MonoBehaviour
         if (s == null)
         {
             Debug.Log("Sound Not Found");
+            return;
         }
-        else
-        {
-            sfxSource.PlayOneShot(s.clip);
-        }
+
+        if (sfxSource.isPlaying && sfxSource.clip == s.clip)
+            return;
+
+        sfxSource.PlayOneShot(s.clip);
+        sfxSource.clip = s.clip;
+
     }
 }
