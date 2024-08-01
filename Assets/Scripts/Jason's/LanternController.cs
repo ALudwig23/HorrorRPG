@@ -7,7 +7,7 @@ public class LanternController : MonoBehaviour
 {
     public GameObject player; // Reference to the player GameObject
     public Transform lanternHoldPosition; // Position where the lantern should be held
-    public GameObject popupText; // The popup text to show when near the lantern
+    //public GameObject popupText; // The popup text to show when near the lantern
     public KeyCode pickUpKey = KeyCode.F; // Key to pick up the lantern
     public KeyCode dropKey = KeyCode.Q; // Key to drop the lantern
     public KeyCode toggleLightKey = KeyCode.L; // Key to toggle lantern lights
@@ -17,7 +17,7 @@ public class LanternController : MonoBehaviour
 
     void Start()
     {
-        popupText.SetActive(false); // Hide the popup text at the start
+        //popupText.SetActive(false); // Hide the popup text at the start
         InitializeLight2DComponent();
     }
 
@@ -26,28 +26,34 @@ public class LanternController : MonoBehaviour
         if (!isPickedUp && Input.GetKeyDown(pickUpKey) && IsPlayerNearLantern())
         {
             PickUpLantern();
+            Debug.LogError("Lantern picked up");
         }
         else if (isPickedUp && Input.GetKeyDown(dropKey))
         {
             DropLantern();
+            Debug.LogError("Lantern dropped");
         }
         else if (isPickedUp && Input.GetKeyDown(toggleLightKey))
         {
             ToggleLanternLights();
+            Debug.LogError("Toggled Light");
         }
     }
 
     bool IsPlayerNearLantern()
     {
+        Debug.Log("Player near");
+
         // Check if the player GameObject is near the lantern
         return Vector3.Distance(transform.position, player.transform.position) < 2f;
+        
     }
 
     void OnTriggerEnter(Collider other)
     {
         if (other.gameObject == player && !isPickedUp)
         {
-            popupText.SetActive(true); // Show the popup text when the player collides with the lantern
+            //popupText.SetActive(true); // Show the popup text when the player collides with the lantern
         }
     }
 
@@ -55,7 +61,7 @@ public class LanternController : MonoBehaviour
     {
         if (other.gameObject == player)
         {
-            popupText.SetActive(false); // Hide the popup text when the player leaves the lantern
+            //popupText.SetActive(false); // Hide the popup text when the player leaves the lantern
         }
     }
 
@@ -66,7 +72,7 @@ public class LanternController : MonoBehaviour
         transform.localPosition = Vector3.zero;
         transform.localRotation = Quaternion.identity;
         isPickedUp = true;
-        popupText.SetActive(false); // Hide the popup text after picking up
+        //ewpopupText.SetActive(false); // Hide the popup text after picking up
 
         // Set lights state when picked up
         bool currentState = TorchlightState.instance.GetTorchlightState();

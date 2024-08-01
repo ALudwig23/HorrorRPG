@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
@@ -70,6 +71,9 @@ public class PlayerMovement : MonoBehaviour
             _isFacingDownward = false;
             _isFacingRight = true;
             _isFacingLeft = false;
+
+            
+            SoundManager.Instance.PlaySFX("SteppingConcrete");
         }
 
         if (_rigidbody2D.velocity.x < 0)
@@ -81,6 +85,7 @@ public class PlayerMovement : MonoBehaviour
             _isFacingDownward = false;
             _isFacingLeft = true;
             _isFacingRight = false;
+            SoundManager.Instance.PlaySFX("SteppingConcrete");
         }
 
         if (_rigidbody2D.velocity.y > 0)
@@ -92,6 +97,7 @@ public class PlayerMovement : MonoBehaviour
             _isFacingDownward = false;
             _isFacingRight = false;
             _isFacingLeft = false;
+            SoundManager.Instance.PlaySFX("SteppingConcrete");
         }
 
         if (_rigidbody2D.velocity.y < 0)
@@ -103,6 +109,7 @@ public class PlayerMovement : MonoBehaviour
             _isFacingUpward = false;
             _isFacingRight = false;
             _isFacingLeft = false;
+            SoundManager.Instance.PlaySFX("SteppingConcrete");
         }
 
     }

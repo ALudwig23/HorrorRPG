@@ -7,6 +7,7 @@ public class Ambience : MonoBehaviour
 {
     void Start()
     {
+        Debug.Log("calling ambiance " + gameObject.name);
         SoundManager.Instance.PlayMusic("Ambience");
  
     }
