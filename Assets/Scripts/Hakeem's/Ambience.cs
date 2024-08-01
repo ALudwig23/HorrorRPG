@@ -8,8 +8,6 @@ public class Ambience : MonoBehaviour
     void Start()
     {
         SoundManager.Instance.PlayMusic("Ambience");
-        SoundManager.Instance.PlaySFX("Slice");
-        SoundManager.Instance.PlaySFX("Hurt");
-        SoundManager.Instance.PlaySFX("MonsterHurt");
+ 
     }
 }
