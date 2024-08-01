@@ -137,6 +137,7 @@ public class GapingHoleMonster : MonoBehaviour
         if (_currentHealth <= 0)
         {
             _monsterDied = true;
+            SoundManager.Instance.PlaySFX("MonsterDeath");
             Destroy(gameObject);
         }
     }

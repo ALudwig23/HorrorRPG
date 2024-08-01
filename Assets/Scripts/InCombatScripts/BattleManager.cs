@@ -206,6 +206,7 @@ public class BattleManager : MonoBehaviour
 
                 if (_playerStats.CurrentTotalHealth > 0f)
                 {
+                    SoundManager.Instance.PlaySFX("MonsterDeath");
                     _dialogueTypingManager.StopDialogue();
                     _text = "You killed the monster...";
                     _dialogueTypingManager.StartDialogue(_text, _dialogueText);
@@ -215,6 +216,7 @@ public class BattleManager : MonoBehaviour
                 }
                 else if (_playerStats.CurrentTotalHealth <= 0f)
                 {
+                    SoundManager.Instance.PlaySFX("PlayerHurt");
                     _dialogueTypingManager.StopDialogue();
                     _text = "You died...";
                     _dialogueTypingManager.StartDialogue(_text, _dialogueText);
@@ -365,6 +367,9 @@ public class BattleManager : MonoBehaviour
                         {
                             _dialogueTypingManager.StopDialogue();
                             StartCoroutine(_gapingHoleMonsterScript.HeadDamaged());
+                            SoundManager.Instance.PlaySFX("Slice");
+                            SoundManager.Instance.PlaySFX("Hurt");
+                            SoundManager.Instance.PlaySFX("MonsterHurt");
 
                             _battleState = BattleState.MonsterTurn;
                             _attackMissed = false;
@@ -389,6 +394,9 @@ public class BattleManager : MonoBehaviour
                         {
                             _dialogueTypingManager.StopDialogue();
                             StartCoroutine(_gapingHoleMonsterScript.BodyDamaged());
+                            SoundManager.Instance.PlaySFX("Slice");
+                            SoundManager.Instance.PlaySFX("Hurt");
+                            SoundManager.Instance.PlaySFX("MonsterHurt");
 
                             _battleState = BattleState.MonsterTurn;
                             _attackMissed = false;
@@ -413,6 +421,9 @@ public class BattleManager : MonoBehaviour
                         {
                             _dialogueTypingManager.StopDialogue();
                             StartCoroutine(_gapingHoleMonsterScript.LeftLegDamaged());
+                            SoundManager.Instance.PlaySFX("Slice");
+                            SoundManager.Instance.PlaySFX("Hurt");
+                            SoundManager.Instance.PlaySFX("MonsterHurt");
 
                             _battleState = BattleState.MonsterTurn;
                             _attackMissed = false;
@@ -437,6 +448,9 @@ public class BattleManager : MonoBehaviour
                         {
                             _dialogueTypingManager.StopDialogue();
                             StartCoroutine(_gapingHoleMonsterScript.RightLegDamaged());
+                            SoundManager.Instance.PlaySFX("Slice");
+                            SoundManager.Instance.PlaySFX("Hurt");
+                            SoundManager.Instance.PlaySFX("MonsterHurt");
 
                             _battleState = BattleState.MonsterTurn;
                             _attackMissed = false;
@@ -453,6 +467,7 @@ public class BattleManager : MonoBehaviour
                     {
                         _dialogueTypingManager.StopDialogue();
                         _text = "Your attack missed...";
+                        SoundManager.Instance.PlaySFX("Slice");
                         _dialogueTypingManager.StartDialogue(_text, _dialogueText);
 
                         _attackMissed = true;
@@ -483,6 +498,9 @@ public class BattleManager : MonoBehaviour
                             Debug.Log("Bone Spider");
                             _dialogueTypingManager.StopDialogue();
                             StartCoroutine(_boneSpiderScript.HeadDamaged());
+                            SoundManager.Instance.PlaySFX("Slice");
+                            SoundManager.Instance.PlaySFX("Hurt");
+                            SoundManager.Instance.PlaySFX("MonsterHurt");
 
                             _battleState = BattleState.MonsterTurn;
                             _attackMissed = false;
@@ -507,6 +525,8 @@ public class BattleManager : MonoBehaviour
                         {
                             _dialogueTypingManager.StopDialogue();
                             StartCoroutine(_boneSpiderScript.BodyDamaged());
+                            SoundManager.Instance.PlaySFX("Slice");
+                            SoundManager.Instance.PlaySFX("MonsterHurt");
 
                             _battleState = BattleState.MonsterTurn;
                             _attackMissed = false;
@@ -531,6 +551,9 @@ public class BattleManager : MonoBehaviour
                         {
                             _dialogueTypingManager.StopDialogue();
                             StartCoroutine(_boneSpiderScript.LeftClawDamaged());
+                            SoundManager.Instance.PlaySFX("Slice");
+                            SoundManager.Instance.PlaySFX("Hurt");
+                            SoundManager.Instance.PlaySFX("MonsterHurt");
 
                             _battleState = BattleState.MonsterTurn;
                             _attackMissed = false;
@@ -555,6 +578,9 @@ public class BattleManager : MonoBehaviour
                         {
                             _dialogueTypingManager.StopDialogue();
                             StartCoroutine(_boneSpiderScript.RightClawDamaged());
+                            SoundManager.Instance.PlaySFX("Slice");
+                            SoundManager.Instance.PlaySFX("Hurt");
+                            SoundManager.Instance.PlaySFX("MonsterHurt");
 
                             _battleState = BattleState.MonsterTurn;
                             _attackMissed = false;
@@ -579,6 +605,9 @@ public class BattleManager : MonoBehaviour
                         {
                             _dialogueTypingManager.StopDialogue();
                             StartCoroutine(_boneSpiderScript.LeftLegDamaged());
+                            SoundManager.Instance.PlaySFX("Slice");
+                            SoundManager.Instance.PlaySFX("Hurt");
+                            SoundManager.Instance.PlaySFX("MonsterHurt");
 
                             _battleState = BattleState.MonsterTurn;
                             _attackMissed = false;
@@ -603,6 +632,9 @@ public class BattleManager : MonoBehaviour
                         {
                             _dialogueTypingManager.StopDialogue();
                             StartCoroutine(_boneSpiderScript.RightLegDamaged());
+                            SoundManager.Instance.PlaySFX("Slice");
+                            SoundManager.Instance.PlaySFX("Hurt");
+                            SoundManager.Instance.PlaySFX("MonsterHurt");
 
                             _battleState = BattleState.MonsterTurn;
                             _attackMissed = false;
